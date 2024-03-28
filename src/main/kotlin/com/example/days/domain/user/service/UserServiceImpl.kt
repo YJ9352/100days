@@ -34,7 +34,6 @@ import java.util.*
 @Service
 class UserServiceImpl(
     private val userRepository: UserRepository,
-    private val socialRepository: SocialUserLoginRepository,
     private val queryDslUserRepository: QueryDslUserRepository,
     private val mailUtility: MailUtility,
     private val encoder: PasswordEncoder,
