@@ -2,7 +2,6 @@ package com.example.days.domain.user.service
 
 import com.example.days.domain.mail.dto.request.EmailRequest
 import com.example.days.domain.mail.dto.response.EmailResponse
-import com.example.days.domain.oauth.repository.SocialUserLoginRepository
 import com.example.days.domain.user.dto.request.LoginRequest
 import com.example.days.domain.user.dto.request.ModifyInfoRequest
 import com.example.days.domain.user.dto.request.SignUpRequest
