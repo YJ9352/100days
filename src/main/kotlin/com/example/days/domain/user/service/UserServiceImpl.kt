@@ -107,11 +107,11 @@ class UserServiceImpl(
     override fun reissueUserPassword(request: EmailRequest) {
         val user = userRepository.findUserByEmail(request.email)
 
-        if (user != null) {
-            val mail = mailUtility.emailSender(request.email, MailType.CHANGEPASSWORD)
-            user.email = request.email
-            user.password = mail
-            userRepository.save(user)
+        if (user != null && user.email == request.email) {
+                val mail = mailUtility.emailSender(request.email, MailType.CHANGEPASSWORD)
+                user.email = request.email
+                user.password = mail
+                userRepository.save(user)
         } else {
             throw NoSearchUserByEmailException(request.email)
         }
