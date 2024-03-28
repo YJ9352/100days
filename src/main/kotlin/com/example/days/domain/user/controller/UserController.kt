@@ -33,8 +33,8 @@ class UserController(
 
     @Operation(summary = "비밀번호 분실시 재발급(메일보내기)")
     @PatchMapping("/search/pass")
-    fun changeUserPassword(@RequestBody request: EmailRequest): ResponseEntity<Unit> {
-        userService.changeUserPassword(request)
+    fun reissueUserPassword(@RequestBody request: EmailRequest): ResponseEntity<Unit> {
+        userService.reissueUserPassword(request)
         return ResponseEntity.status(HttpStatus.OK).build()
     }
 

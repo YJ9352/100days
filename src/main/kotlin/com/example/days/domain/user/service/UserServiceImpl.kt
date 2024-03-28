@@ -104,7 +104,7 @@ class UserServiceImpl(
     }
 
     @Transactional
-    override fun changeUserPassword(request: EmailRequest) {
+    override fun reissueUserPassword(request: EmailRequest) {
         val user = userRepository.findUserByEmail(request.email)
 
         if (user != null) {

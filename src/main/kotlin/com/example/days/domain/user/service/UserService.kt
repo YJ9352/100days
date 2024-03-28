@@ -20,7 +20,7 @@ interface UserService {
 
     fun searchUserEmail(nickname: String): List<EmailResponse>
 
-    fun changeUserPassword(request: EmailRequest)
+    fun reissueUserPassword(request: EmailRequest)
 
     fun getInfo(userId: UserPrincipal): ModifyInfoResponse
 
