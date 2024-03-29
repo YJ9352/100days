@@ -11,14 +11,14 @@ import com.example.days.global.infra.security.UserPrincipal
 interface PostService {
 
     // post 전체조회 (목록)
-    fun getAllPostList(): List<PostListResponse>
+    fun getAllPostList(resolutionId: Long): List<PostListResponse>
 
     // post 단건조회
-    fun getPostById(postId: Long): PostWithCommentResponse
+    fun getPostById(resolutionId: Long, postId: Long): PostWithCommentResponse
 
     // post 작성, 수정, 삭제
     fun createPost(userId: UserPrincipal, resolutionId: Long, type: PostType, request: PostRequest): PostResponse
-    fun updatePost(userId: UserPrincipal, type: PostType, postId: Long, request: PostRequest): PostResponse
+    fun updatePost(userId: UserPrincipal, resolutionId: Long, type: PostType, postId: Long, request: PostRequest): PostResponse
     fun deletePost(userId: UserPrincipal, postId: Long): DeleteResponse
 
 }

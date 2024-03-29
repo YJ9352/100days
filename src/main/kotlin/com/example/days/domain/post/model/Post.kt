@@ -42,4 +42,18 @@ class Post(
     @Column(name = "id")
     var id: Long? = null
 
+    fun updatePost(updateTitle: String, updateContent: String, updateImg: String, type: PostType){
+        if (type == PostType.APPEND){
+            title = updateTitle
+            content = updateContent
+            imageUrl = updateImg
+        }
+        else {
+            title = updateTitle
+            content = ""
+            imageUrl = ""
+        }
+
+    }
+
 }

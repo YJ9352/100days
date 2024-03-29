@@ -19,7 +19,6 @@ class LikeServiceImpl(
     private val userRepository: UserRepository,
     private val resolutionRepository: ResolutionRepository,
     private val likeRepository: LikeRepository,
-    private val redisTemplate: RedisTemplate<String, Any>,
 ): LikeService {
     @Transactional
     override fun insertLike(request: LikeRequest) {
