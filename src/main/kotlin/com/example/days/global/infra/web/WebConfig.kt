@@ -1,7 +1,9 @@
 package com.example.days.global.infra.web
 
+import com.example.days.domain.oauth.config.OAuth2ProviderConverter
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
+import org.springframework.format.FormatterRegistry
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
@@ -12,9 +14,9 @@ class WebConfig(
 ) : WebMvcConfigurer {
 
 
-//    override fun addFormatters(registry: FormatterRegistry) {
-//        registry.addConverter(OAuth2ProviderConverter())
-//    }
+    override fun addFormatters(registry: FormatterRegistry) {
+        registry.addConverter(OAuth2ProviderConverter())
+    }
 
     override fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**") // 모든 경로에 대해서
