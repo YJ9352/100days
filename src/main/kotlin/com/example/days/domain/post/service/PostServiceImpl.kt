@@ -103,7 +103,7 @@ class PostServiceImpl(
                     post.content = ""
                     post.imageUrl = ""
 
-                } else if (post.type == PostType.POST) {
+                } else if (post.type == PostType.APPEND) {
                     val (title, content, imageUrl) = request
                     post.title = title
                     post.content = content
