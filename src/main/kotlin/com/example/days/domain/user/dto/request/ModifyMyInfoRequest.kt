@@ -1,9 +1,5 @@
 package com.example.days.domain.user.dto.request
 
-import com.example.days.domain.user.repository.UserRepository
-import com.example.days.global.common.exception.user.DuplicateNicknameException
-import com.example.days.global.infra.regex.RegexFunc
-import com.example.days.global.support.RandomCode
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
