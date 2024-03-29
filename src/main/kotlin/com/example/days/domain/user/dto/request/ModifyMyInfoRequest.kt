@@ -1,5 +1,9 @@
 package com.example.days.domain.user.dto.request
 
+import com.example.days.domain.user.repository.UserRepository
+import com.example.days.global.common.exception.user.DuplicateNicknameException
+import com.example.days.global.infra.regex.RegexFunc
+import com.example.days.global.support.RandomCode
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
@@ -24,9 +28,10 @@ data class ModifyMyInfoRequest(
     @NotBlank
     @Schema(
         description = "회원 ID",
-        example = "12자리 문자를 입력해주세요."
+        example = "12자리 문자를 입력해주세요. 비워두시면 랜덤하게 생성됩니다."
     )
-    @field:Pattern(regexp = "^([a-zA-Z0-9.!@#%^&*]{12})$")
+    @field:Pattern(regexp = "^[a-zA-Z0-9\\p{Punct}]{12}$")
     val accountId: String,
     val birth: LocalDate
 )
+

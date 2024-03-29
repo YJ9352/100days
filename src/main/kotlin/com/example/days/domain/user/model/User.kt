@@ -2,7 +2,10 @@ package com.example.days.domain.user.model
 
 import com.example.days.domain.oauth.model.OAuth2Provider
 import com.example.days.domain.user.dto.request.ModifyMyInfoRequest
+import com.example.days.global.common.exception.user.DuplicateNicknameException
 import com.example.days.global.entity.BaseEntity
+import com.example.days.global.infra.regex.RegexFunc
+import com.example.days.global.support.RandomCode
 import jakarta.persistence.*
 import java.time.LocalDate
 
@@ -70,8 +73,11 @@ class User(
     }
 
     fun updateUser(request: ModifyMyInfoRequest) {
+        val account = request.accountId
+            .ifBlank { RandomCode(RegexFunc()).generateRandomCode(12) }
+
         nickname = request.nickname
-        accountId = request.accountId
+        accountId = account
         birth = request.birth
     }
 }

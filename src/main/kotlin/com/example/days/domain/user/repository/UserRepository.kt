@@ -13,7 +13,8 @@ import java.time.LocalDateTime
 
 interface UserRepository: JpaRepository<User, Long>, CustomUserRepository {
     fun existsByEmail(email: String): Boolean
-    fun existsByNickname(nickname: String): Boolean
+//    fun existsByNickname(nickname: String): Boolean
+    fun existsByAccountId(accountId: String): Boolean
     fun findUserByEmail(email: String): User?
     fun findByNickname(nickname: String): User?
 
