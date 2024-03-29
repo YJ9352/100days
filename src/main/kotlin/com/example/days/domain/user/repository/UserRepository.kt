@@ -19,7 +19,8 @@ interface UserRepository: JpaRepository<User, Long>, CustomUserRepository {
     fun findByNickname(nickname: String): User?
 
     fun existsByProviderAndProviderId(provider: OAuth2Provider, toString: String): Boolean
-    fun findByProviderAndProviderId(provider: OAuth2Provider, toString: String): User
+//    fun findByProviderAndProviderId(provider: OAuth2Provider, toString: String): User
+    fun findByEmailAndProviderId(email: String, providerId: String): User
 
     @Modifying
     @Transactional

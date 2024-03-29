@@ -6,12 +6,14 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
-class KakaoUserInfoResponse(
+class KakaoInfoResponse(
     id: Long,
-    properties: KakaoUserPropertiesResponse,
-    account: KakaoUserAccountResponse,
+    properties: KakaoPropertiesResponse,
+    account: KakaoAccountResponse,
 ) : OAuth2LoginUserInfo(
+
     provider = OAuth2Provider.KAKAO,
     id = id.toString(),
+    nickname = properties.nickname,
     email = account.email
 )

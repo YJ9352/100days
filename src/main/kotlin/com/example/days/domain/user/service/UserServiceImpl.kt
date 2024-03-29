@@ -55,11 +55,7 @@ class UserServiceImpl(
             role = user.role
         )
 
-        return LoginResponse(
-            accessToken,
-            nickname = user.nickname,
-            message = "로그인이 완료되었습니다."
-        )
+        return LoginResponse(accessToken)
     }
 
     // 회원가입

@@ -29,8 +29,8 @@ class SecurityConfig(
             .httpBasic { it.disable() }
             .formLogin { it.disable() }
             .csrf { it.disable() }
-            .cors { it.disable() }
-            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+//            .cors { it.disable() }
+//            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .headers { it.frameOptions { option -> option.disable() } }
             .authorizeHttpRequests {
                 // common
@@ -51,11 +51,10 @@ class SecurityConfig(
                 it.requestMatchers(AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
 
                 // 소셜로그인 임시처리 > 나중에 경로 확인 후 전체수정 필요
-                it.requestMatchers(AntPathRequestMatcher("/login/oauth2")).permitAll()
-                it.requestMatchers(AntPathRequestMatcher("/login/oauth2/callback")).permitAll()
-                it.requestMatchers(AntPathRequestMatcher("/error")).permitAll()
-
-                it.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated()
+//                it.requestMatchers(AntPathRequestMatcher("/login/oauth2")).permitAll()
+//                it.requestMatchers(AntPathRequestMatcher("/login/oauth2/callback")).permitAll()
+//                it.requestMatchers(AntPathRequestMatcher("/error")).permitAll()
+                    .anyRequest().authenticated()
             }.addFilterBefore(
                 jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter::class.java
