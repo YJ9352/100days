@@ -40,3 +40,5 @@ data class AlreadyBANException(val nickname: String) : RuntimeException(
 data class NotHaveSearchException(val title: String) : RuntimeException(
     "검색 결과가 존재하지 않습니다."
 )
+
+

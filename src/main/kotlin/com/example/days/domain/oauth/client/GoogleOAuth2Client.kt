@@ -12,9 +12,9 @@ import org.springframework.web.client.body
 
 @Component
 class GoogleOAuth2Client(
-    @Value("\${oauth2.google.client-id}") val clientId: String,
-    @Value("\${oauth2.google.client-secret}") val clientSecret: String,
-    @Value("\${oauth2.google.redirect-uri}") val redirectUrl: String,
+    @Value("\${oauth2.google.client.id}") val clientId: String,
+    @Value("\${oauth2.google.client.secret}") val clientSecret: String,
+    @Value("\${oauth2.google.redirect.uri}") val redirectUrl: String,
     private val restClient: RestClient
 ) : OAuth2Client {
 

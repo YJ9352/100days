@@ -7,6 +7,11 @@ spring:
         use_sql_comments: true
         hbm2ddl:
           auto: update
+  data:
+    redis:
+      host: ${spring_data_redis_host}
+      port: ${spring_data_redis_port}
+      password: ${spring_data_redis_password}
 logging:
   level:
     org:
@@ -19,18 +24,33 @@ logging:
         security: debug
 auth:
   jwt:
-    issuer: ${auth.jwt.issuer}
-    secret: ${auth.jwt.secret}
-    accessTokenExpirationHour: ${auth.jwt.accessTokenExpirationHour}
+    issuer: ${auth_jwt_issuer}
+    secret: ${auth_jwt_secret}
+    accessTokenExpirationHour: ${auth_jwt_accessTokenExpirationHour}
+
 mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ${smtp.name}
-    password: ${smtp.password}
-    properties:
-        mail:
-          smtp:
-            auth: true
-            starttls:
-              enable: true
-              required: true
+  host: smtp.gmail.com
+  port: 587
+  username: ${smtp_name}
+  password: ${smtp_password}
+  properties:
+    mail:
+      smtp:
+        auth: true
+        starttls:
+          enable: true
+          required: true
+
+domain:
+  url: ${domain_url}
+api:
+  url: ${api_url}
+oauth2:
+  kakao:
+    client-id: ${oauth2_kakao_client_id}
+    client-secret: ${oauth2_kakao_client_secret}
+    redirect-uri: ${oauth2_kakao_redirect_uri}
+  google:
+    client-id:  ${oauth2_google_client_id}
+    client-secret:  ${oauth2_google_redirect_uri}
+    redirect-uri:  ${oauth2_google_client_secret}
