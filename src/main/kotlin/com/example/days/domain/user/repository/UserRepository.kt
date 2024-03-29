@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-interface UserRepository: JpaRepository<User, Long> {
+interface UserRepository: JpaRepository<User, Long>, CustomUserRepository {
     fun existsByEmail(email: String): Boolean
     fun existsByNickname(nickname: String): Boolean
     fun findUserByEmail(email: String): User?

@@ -23,7 +23,7 @@ class SocialUserService (
 
             val user = User(
                 email = userInfo.email,
-                nickname = userInfo.nickname,
+                nickname = "",
                 password = pass,
                 birth = LocalDate.now(),
                 accountId = RandomCode(RegexFunc()).generateRandomCode(12),

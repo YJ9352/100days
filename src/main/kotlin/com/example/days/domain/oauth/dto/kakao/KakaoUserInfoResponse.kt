@@ -9,10 +9,9 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming
 class KakaoUserInfoResponse(
     id: Long,
     properties: KakaoUserPropertiesResponse,
-    kakaoAccount: KakaoUserAccountResponse,
+    account: KakaoUserAccountResponse,
 ) : OAuth2LoginUserInfo(
     provider = OAuth2Provider.KAKAO,
     id = id.toString(),
-    nickname = properties.nickname,
-    email = kakaoAccount.email
+    email = account.email
 )

@@ -38,12 +38,11 @@ class PostController(
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     fun creatPost(
         @AuthenticationPrincipal userId: UserPrincipal,
-        categoryId: Long,
         resolutionId: Long,
         type: PostType,
         @RequestBody request: PostRequest
     ): ResponseEntity<PostResponse> {
-        return ResponseEntity.status(HttpStatus.OK).body(postService.createPost(userId, categoryId, resolutionId, type, request))
+        return ResponseEntity.status(HttpStatus.OK).body(postService.createPost(userId, resolutionId, type, request))
     }
 
     @Operation(summary = "포스트 수정")

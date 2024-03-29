@@ -1,6 +1,6 @@
 package com.example.days.global.infra.security
 
-import com.example.days.domain.oauth.service.OAuth2LoginService
+// import com.example.days.domain.oauth.service.OAuth2LoginService
 import com.example.days.global.infra.security.jwt.JwtAuthenticationFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -9,7 +9,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
+// import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
@@ -19,8 +19,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 @EnableMethodSecurity
 class SecurityConfig(
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
-    private val clientRegistrationRepository: ClientRegistrationRepository,
-    private val oauth2LoginService: OAuth2LoginService
+//    private val clientRegistrationRepository: ClientRegistrationRepository,
+//    private val oauth2LoginService: OAuth2LoginService
 ) {
 
     @Bean
@@ -50,27 +50,16 @@ class SecurityConfig(
                 it.requestMatchers(AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
 
-                // 로그인 임시처리
-                it.requestMatchers(AntPathRequestMatcher("/oauth2/**")).permitAll()
-                it.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-      //          it.requestMatchers(AntPathRequestMatcher("/login/oauth2")).permitAll()
-      //          it.requestMatchers(AntPathRequestMatcher("/login/oauth2/callback/")).permitAll()
-      //          it.requestMatchers(AntPathRequestMatcher("/error")).permitAll()
+                // 소셜로그인 임시처리 > 나중에 경로 확인 후 전체수정 필요
+                it.requestMatchers(AntPathRequestMatcher("/login/oauth2")).permitAll()
+                it.requestMatchers(AntPathRequestMatcher("/login/oauth2/callback")).permitAll()
+                it.requestMatchers(AntPathRequestMatcher("/error")).permitAll()
 
-//                it.requestMatchers(PathRequest.toH2Console()).permitAll()
-                    .anyRequest()
-                    .authenticated()
-
- //           }.oauth2Login {
- //               it.authorizationEndpoint{ it.baseUri("/login/oauth2/callback/*") }
- //               it.redirectionEndpoint { it.baseUri("/login/oauth2/code/*") }
- //               it.userInfoEndpoint { oauth2LoginService }
-
+                it.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated()
             }.addFilterBefore(
                 jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter::class.java
-            ).oauth2Login { clientRegistrationRepository }
-            .exceptionHandling {
+            ).exceptionHandling {
 //                it.authenticationEntryPoint(authenticationEntryPoint)
 //                it.accessDeniedHandler(accessDeniedHandler)
             }

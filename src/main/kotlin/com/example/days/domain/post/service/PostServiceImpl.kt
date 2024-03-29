@@ -1,6 +1,5 @@
 package com.example.days.domain.post.service
 
-import com.example.days.domain.category.repository.CategoryRepository
 import com.example.days.domain.comment.model.Comment
 import com.example.days.domain.comment.repository.CommentRepository
 import com.example.days.domain.post.dto.request.PostRequest
@@ -28,7 +27,6 @@ class PostServiceImpl(
     private val userRepository: UserRepository,
     private val postRepository: PostRepository,
     private val resolutionRepository: ResolutionRepository,
-    private val categoryRepository: CategoryRepository,
     private val commentRepository: CommentRepository
 ) : PostService {
 
@@ -60,13 +58,11 @@ class PostServiceImpl(
     // post 작성 > 데일리 체크에서 달성도 체크 후 이쪽으로 넘어옴
     @Transactional
     override fun createPost(userId: UserPrincipal,
-                            categoryId: Long,
                             resolutionId: Long,
                             type: PostType,
                             request: PostRequest
     ): PostResponse {
         val user = userRepository.findByIdOrNull(userId.id) ?: throw UserNotFoundException()
-        val category = categoryRepository.findByIdOrNull(categoryId) ?: throw ModelNotFoundException("카테고리", categoryId)
         val resolution = resolutionRepository.findByIdOrNull(resolutionId) ?: throw ModelNotFoundException("목표", resolutionId)
         val post = Post(
             title = request.title,
@@ -74,8 +70,7 @@ class PostServiceImpl(
             imageUrl = request.imageUrl,
             type = type,
             userId = user,
-            resolutionId = resolution,
-            categoryId = category
+            resolutionId = resolution
         )
             // check 로 선택하면 제목만 입력가능, 나머지는 입력 x
             if (type == PostType.CHECK) {
@@ -103,7 +98,7 @@ class PostServiceImpl(
                     post.content = ""
                     post.imageUrl = ""
 
-                } else if (post.type == PostType.POST) {
+                } else if (post.type == PostType.APPEND) {
                     val (title, content, imageUrl) = request
                     post.title = title
                     post.content = content
