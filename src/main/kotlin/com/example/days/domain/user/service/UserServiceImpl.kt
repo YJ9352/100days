@@ -1,15 +1,8 @@
 package com.example.days.domain.user.service
 
 import com.example.days.domain.mail.dto.EmailRequest
-import com.example.days.domain.user.dto.response.EmailResponse
-import com.example.days.domain.user.dto.request.LoginRequest
-import com.example.days.domain.user.dto.request.ModifyInfoRequest
-import com.example.days.domain.user.dto.request.SignUpRequest
-import com.example.days.domain.user.dto.request.UserPasswordRequest
-import com.example.days.domain.user.dto.response.AccountSearchResponse
-import com.example.days.domain.user.dto.response.LoginResponse
-import com.example.days.domain.user.dto.response.ModifyInfoResponse
-import com.example.days.domain.user.dto.response.SignUpResponse
+import com.example.days.domain.user.dto.request.*
+import com.example.days.domain.user.dto.response.*
 import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.model.User
 import com.example.days.domain.user.model.UserRole
@@ -62,11 +55,7 @@ class UserServiceImpl(
             role = user.role
         )
 
-        return LoginResponse(
-            accessToken,
-            nickname = user.nickname,
-            message = "로그인이 완료되었습니다."
-        )
+        return LoginResponse(accessToken)
     }
 
     // 회원가입
@@ -74,13 +63,21 @@ class UserServiceImpl(
         if (userRepository.existsByEmail(regexFunc.regexUserEmail(request.email)))
             throw DuplicateEmailException(request.email)
 
-        // 닉네임 중복허용 x
-        if (userRepository.existsByNickname(request.nickname))
-            throw DuplicateNicknameException(request.nickname)
+//        // 닉네임 중복허용 x
+//        if (userRepository.existsByNickname(request.nickname))
+//            throw DuplicateNicknameException(request.nickname) RandomCode(RegexFunc()).generateRandomCode(12)
 
         val pass =
             if (request.password == request.newPassword) encoder.encode(regexFunc.regexPassword(request.password))
             else throw MismatchPasswordException()
+
+        // 계정이 존재하는지 확인하고, 이미 존재한다면 예외처리
+        if (userRepository.existsByAccountId(request.accountId)) {
+            throw DuplicateNicknameException(request.accountId)
+        }
+
+        // 요청된 accountId가 비어있으면 랜덤 코드를 생성
+        val account = request.accountId.ifBlank { RandomCode(RegexFunc()).generateRandomCode(12) }
 
         return User(
             email = regexFunc.regexUserEmail(request.email),
@@ -90,7 +87,7 @@ class UserServiceImpl(
             isDelete = false,
             status = Status.ACTIVE,
             role = UserRole.USER,
-            accountId = RandomCode(RegexFunc()).generateRandomCode(12), // 랜덤문자 생성루트 통일
+            accountId = account,
             provider = null,
             providerId = null.toString()
         ).let {
@@ -110,35 +107,41 @@ class UserServiceImpl(
 
         // 이메일이 null 이 아니고, 가입된 사용자일때 메일 발송
         if (user != null && user.email == request.email) {
-                val mail = mailUtility.emailSender(request.email, MailType.CHANGEPASSWORD)
-                user.email = request.email
-                user.password = mail
-                userRepository.save(user)
+            val mail = mailUtility.emailSender(request.email, MailType.CHANGEPASSWORD)
+            user.email = request.email
+            user.password = mail
+            userRepository.save(user)
         } else {
             throw NoSearchUserByEmailException(request.email)
         }
     }
 
     // 회원정보 조회
-    override fun getMyInfo(userId: UserPrincipal): ModifyInfoResponse {
+    override fun getMyInfo(userId: UserPrincipal): ModifyMyInfoResponse {
         val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("User", userId.id)
-        return user.let { ModifyInfoResponse.from(it) }
+        return user.let { ModifyMyInfoResponse.from(it) }
     }
 
     // 회원정보 수정
     @Transactional
-    override fun modifyMyInfo(userId: UserPrincipal, request: ModifyInfoRequest): ModifyInfoResponse {
+    override fun modifyMyInfo(userId: UserPrincipal, request: ModifyMyInfoRequest): ModifyMyInfoResponse {
         val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("user", userId.id)
+
+        // accountId가 존재하는지 확인하고, 이미 존재한다면 예외처리
+        if (userRepository.existsByAccountId(request.accountId)) {
+            throw DuplicateNicknameException(request.accountId)
+        }
 
         // 기존 비밀번호 재입력 후 일치 시 수정 가능
         if (encoder.matches(regexFunc.regexPassword(request.password), user.password)) {
             user.updateUser(request)
             userRepository.save(user)
+
         } else {
             throw MismatchPasswordException()
         }
 
-        return ModifyInfoResponse(user.email, user.nickname, user.birth)
+        return ModifyMyInfoResponse(user.email, user.nickname, user.birth)
     }
 
     // 회원탈퇴 (상태 변경 후 7일 뒤 삭제)

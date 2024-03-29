@@ -10,9 +10,10 @@ class GoogleLoginUserInfoResponse(
     id: String,
     nickname: String,
     email: String
-//    myinfo: GoogleUserPropertiestResponse,
 ) : OAuth2LoginUserInfo(
+
     provider = OAuth2Provider.GOOGLE,
     id = id,
+    nickname = nickname,
     email = email
 )

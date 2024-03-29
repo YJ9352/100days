@@ -1,15 +1,8 @@
 package com.example.days.domain.user.controller
 
 import com.example.days.domain.mail.dto.EmailRequest
-import com.example.days.domain.user.dto.response.EmailResponse
-import com.example.days.domain.user.dto.request.LoginRequest
-import com.example.days.domain.user.dto.request.ModifyInfoRequest
-import com.example.days.domain.user.dto.request.SignUpRequest
-import com.example.days.domain.user.dto.request.UserPasswordRequest
-import com.example.days.domain.user.dto.response.AccountSearchResponse
-import com.example.days.domain.user.dto.response.LoginResponse
-import com.example.days.domain.user.dto.response.ModifyInfoResponse
-import com.example.days.domain.user.dto.response.SignUpResponse
+import com.example.days.domain.user.dto.request.*
+import com.example.days.domain.user.dto.response.*
 import com.example.days.domain.user.service.UserService
 import com.example.days.global.infra.security.UserPrincipal
 import io.swagger.v3.oas.annotations.Operation
@@ -68,7 +61,7 @@ class UserController(
     @GetMapping("/myinfo")
     fun getMyInfo(
         @AuthenticationPrincipal userPrincipal: UserPrincipal
-    ): ResponseEntity<ModifyInfoResponse> {
+    ): ResponseEntity<ModifyMyInfoResponse> {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(userService.getMyInfo(userPrincipal))
@@ -78,8 +71,8 @@ class UserController(
     @PutMapping()
     fun modifyMyInfo(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
-        @RequestBody @Valid request: ModifyInfoRequest
-    ): ResponseEntity<ModifyInfoResponse> {
+        @RequestBody @Valid request: ModifyMyInfoRequest
+    ): ResponseEntity<ModifyMyInfoResponse> {
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(userService.modifyMyInfo(userPrincipal, request))
