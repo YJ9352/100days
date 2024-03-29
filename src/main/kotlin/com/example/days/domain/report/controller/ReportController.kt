@@ -42,7 +42,7 @@ class ReportController(
         @RequestBody req: PostReportRequest,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<PostReportResponse> {
-        val userId = userPrincipal.subject
+        val userId = userPrincipal.id
         return ResponseEntity.status(HttpStatus.CREATED).body(reportService.reportPost(req, userId))
     }
 
@@ -53,7 +53,7 @@ class ReportController(
         @RequestBody req: CommentReportRequest,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<CommentReportResponse> {
-        val userId = userPrincipal.subject
+        val userId = userPrincipal.id
         return ResponseEntity.status(HttpStatus.CREATED).body(reportService.reportComment(req, userId))
     }
 }
