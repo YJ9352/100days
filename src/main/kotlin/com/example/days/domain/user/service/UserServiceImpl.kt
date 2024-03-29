@@ -13,7 +13,6 @@ import com.example.days.domain.user.dto.response.SignUpResponse
 import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.model.User
 import com.example.days.domain.user.model.UserRole
-import com.example.days.domain.user.repository.UserRepositoryImpl
 import com.example.days.domain.user.repository.UserRepository
 import com.example.days.global.common.exception.common.ModelNotFoundException
 import com.example.days.global.common.exception.user.*
