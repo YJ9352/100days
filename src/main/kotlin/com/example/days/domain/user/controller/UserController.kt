@@ -52,19 +52,19 @@ class UserController(
 
     @Operation(summary = "회원정보 보기(로그인 회원)")
     @GetMapping("/myinfo")
-    fun getInfo(
+    fun getMyInfo(
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<ModifyInfoResponse> {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getInfo(userPrincipal))
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getMyInfo(userPrincipal))
     }
 
     @Operation(summary = "회원정보 수정(로그인 회원)")
     @PutMapping()
-    fun modifyInfo(
+    fun modifyMyInfo(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
         @RequestBody @Valid request: ModifyInfoRequest
     ): ResponseEntity<ModifyInfoResponse> {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.modifyInfo(userPrincipal, request))
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.modifyMyInfo(userPrincipal, request))
     }
 
     @Operation(summary = "회원탈퇴")
@@ -79,11 +79,11 @@ class UserController(
 
     @Operation(summary = "비밀번호 변경")
     @PatchMapping("/passwordchange")
-    fun passwordChange(
+    fun passwordChangeInMyInfo(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
         @RequestBody @Valid request: UserPasswordRequest
     ): ResponseEntity<Unit> {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.passwordChange(userPrincipal, request))
+        return ResponseEntity.status(HttpStatus.OK).body(userService.passwordChangeInMyInfo(userPrincipal, request))
     }
 
     @Operation(summary = "유저 검색(쪽지 등)")

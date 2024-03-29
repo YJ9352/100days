@@ -21,6 +21,7 @@ import com.example.days.global.infra.regex.RegexFunc
 import com.example.days.global.infra.security.UserPrincipal
 import com.example.days.global.infra.security.jwt.JwtPlugin
 import com.example.days.global.support.MailType
+import com.example.days.global.support.RandomCode
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -37,14 +38,17 @@ class UserServiceImpl(
     private val jwtPlugin: JwtPlugin,
     private val regexFunc: RegexFunc
 ) : UserService {
+
     // 로그인
     override fun login(request: LoginRequest): LoginResponse {
+        // 유저, 비밀번호 존재 확인
         val user = userRepository.findUserByEmail(regexFunc.regexUserEmail(request.email))
             ?: throw NoSearchUserByEmailException(request.email)
 
         if (!encoder.matches(regexFunc.regexPassword(request.password), user.password)
         ) throw MismatchPasswordException()
 
+        // 해당 회원이 탈퇴 상태인데 7일이 지나지 않았을 때, 다시 활동 상태로 되돌림
         if (user.status == Status.BAN) throw UserSuspendedException()
         if (user.status == Status.WITHDRAW) {
             user.isDelete = false
@@ -66,18 +70,18 @@ class UserServiceImpl(
         )
     }
 
+    // 회원가입
     override fun signUp(request: SignUpRequest): SignUpResponse {
         if (userRepository.existsByEmail(regexFunc.regexUserEmail(request.email)))
             throw DuplicateEmailException(request.email)
 
+        // 닉네임 중복허용 x
         if (userRepository.existsByNickname(request.nickname))
             throw DuplicateNicknameException(request.nickname)
 
         val pass =
             if (request.password == request.newPassword) encoder.encode(regexFunc.regexPassword(request.password))
             else throw MismatchPasswordException()
-
-        val generateId = UUID.randomUUID().toString().substring(0, 12)
 
         return User(
             email = regexFunc.regexUserEmail(request.email),
@@ -87,7 +91,7 @@ class UserServiceImpl(
             isDelete = false,
             status = Status.ACTIVE,
             role = UserRole.USER,
-            accountId = generateId,
+            accountId = RandomCode(RegexFunc()).generateRandomCode(12), // 랜덤문자 생성루트 통일
             provider = null,
             providerId = null.toString()
         ).let {
@@ -95,14 +99,17 @@ class UserServiceImpl(
         }.let { SignUpResponse.from(it) }
     }
 
+    // 회원의 가입된 email 검색 (분실시)
     override fun searchUserEmail(nickname: String): List<EmailResponse> {
         return userRepository.searchUserByNickname(nickname).map { EmailResponse.from(it) }
     }
 
+    // 회원의 비밀번호 분실 시 재발급
     @Transactional
     override fun reissueUserPassword(request: EmailRequest) {
         val user = userRepository.findUserByEmail(request.email)
 
+        // 이메일이 null 이 아니고, 가입된 사용자일때 메일 발송
         if (user != null && user.email == request.email) {
                 val mail = mailUtility.emailSender(request.email, MailType.CHANGEPASSWORD)
                 user.email = request.email
@@ -113,15 +120,18 @@ class UserServiceImpl(
         }
     }
 
-    override fun getInfo(userId: UserPrincipal): ModifyInfoResponse {
+    // 회원정보 조회
+    override fun getMyInfo(userId: UserPrincipal): ModifyInfoResponse {
         val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("User", userId.id)
         return user.let { ModifyInfoResponse.from(it) }
     }
 
+    // 회원정보 수정
     @Transactional
-    override fun modifyInfo(userId: UserPrincipal, request: ModifyInfoRequest): ModifyInfoResponse {
+    override fun modifyMyInfo(userId: UserPrincipal, request: ModifyInfoRequest): ModifyInfoResponse {
         val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("user", userId.id)
 
+        // 기존 비밀번호 재입력 후 일치 시 수정 가능
         if (encoder.matches(regexFunc.regexPassword(request.password), user.password)) {
             user.updateUser(request)
             userRepository.save(user)
@@ -132,6 +142,7 @@ class UserServiceImpl(
         return ModifyInfoResponse(user.email, user.nickname, user.birth)
     }
 
+    // 회원탈퇴 (상태 변경 후 7일 뒤 삭제)
     override fun withdraw(userId: UserPrincipal, request: UserPasswordRequest) {
         val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("user", userId.id)
         if (encoder.matches(regexFunc.regexPassword(request.password), user.password)) {
@@ -143,7 +154,9 @@ class UserServiceImpl(
         }
     }
 
-    override fun passwordChange(userId: UserPrincipal, request: UserPasswordRequest) {
+    // 비밀번호 변경 (회원정보 내부에서 변경)
+    @Transactional
+    override fun passwordChangeInMyInfo(userId: UserPrincipal, request: UserPasswordRequest) {
         val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("user", userId.id)
 
         if (encoder.matches(request.password, user.password))
@@ -157,7 +170,7 @@ class UserServiceImpl(
         }
     }
 
-    // 고유아이디 or 닉네임 검색기능 > 닉네임의 경우 동일아이디 전부 출력
+    // 고유아이디 or 닉네임으로 유저 검색 > 닉네임의 경우 동일아이디 전부 출력
     override fun searchUserAccountId(accountId: String): List<AccountSearchResponse> {
         return userRepository.seacrhUserByAccountIdAndNickname(accountId).map { AccountSearchResponse.from(it) }
     }
