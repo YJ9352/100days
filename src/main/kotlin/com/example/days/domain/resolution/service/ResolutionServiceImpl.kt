@@ -90,5 +90,18 @@ class ResolutionServiceImpl(
             }
     }
 
+    override fun getMyResolutionById(resolutionId: Long, userId: Long): ResolutionResponse {
+        val resolution = getByIdOrNull(resolutionId)
+        if (resolution.author.id == userId){
+            return ResolutionResponse.from(resolution)
+        }
+        else throw PermissionDeniedException()
+    }
+
+    override fun getMyResolutionListPaginated(page: Int, sortOrder: SortOrder?, userId: Long): Page<SimpleResolutionResponse> {
+        val resolutionList = resolutionRepository.findByMyResolutionPageable(page, sortOrder, userId)
+        return resolutionList.map { SimpleResolutionResponse.from(it) }
+    }
+
     fun getByIdOrNull(id: Long) = resolutionRepository.findByIdOrNull(id) ?: throw ModelNotFoundException("Resolution", id)
 }
