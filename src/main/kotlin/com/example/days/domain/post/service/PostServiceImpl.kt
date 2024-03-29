@@ -13,7 +13,9 @@ import com.example.days.domain.post.repository.PostRepository
 import com.example.days.domain.resolution.repository.ResolutionRepository
 import com.example.days.domain.user.repository.UserRepository
 import com.example.days.global.common.exception.auth.PermissionDeniedException
+import com.example.days.global.common.exception.common.CheckAlreadyCompletedException
 import com.example.days.global.common.exception.common.ModelNotFoundException
+import com.example.days.global.common.exception.common.ResolutionAlreadyCompletedException
 import com.example.days.global.common.exception.common.TypeNotFoundException
 import com.example.days.global.common.exception.user.UserNotFoundException
 import com.example.days.global.infra.security.UserPrincipal
@@ -31,88 +33,73 @@ class PostServiceImpl(
 ) : PostService {
 
     // post 전체조회 (내림차순), comment x
-    override fun getAllPostList(): List<PostListResponse> {
-        // 게시글 작성시간 특정 부분까지만 표시
-        val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-        return postRepository.findAll()
+    override fun getAllPostList(resolutionId: Long): List<PostListResponse> {
+        val resolution = resolutionRepository.findByIdOrNull(resolutionId)
+            ?: throw ModelNotFoundException("목표", resolutionId)
+        return postRepository.findByResolutionId(resolution)
             .sortedByDescending { it.createdAt }
-            .map {
-                PostListResponse(
-                    id = it.id!!,
-                    title = it.title,
-                    createdAt = it.createdAt.format(formatter)
-                )
-            }
+            .map { PostListResponse.from(it) }
     }
 
     // post 개별조회, comment o
     @Transactional
-    override fun getPostById(postId: Long): PostWithCommentResponse {
+    override fun getPostById(resolutionId: Long, postId: Long): PostWithCommentResponse {
+        val resolution = resolutionRepository.findByIdOrNull(resolutionId)
+            ?: throw ModelNotFoundException("목표", resolutionId)
         val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("게시글", postId)
-        val comments: List<Comment> = commentRepository.findByPostId(post)
-        post.comments.addAll(comments)
-
-        return PostWithCommentResponse.from(post)
+        if(post.resolutionId?.id == resolution.id){
+            val comments: List<Comment> = commentRepository.findByPostId(post)
+            post.comments.addAll(comments)
+            return PostWithCommentResponse.from(post)
+        }
+        else throw PermissionDeniedException()
     }
 
     // post 작성 > 데일리 체크에서 달성도 체크 후 이쪽으로 넘어옴
     @Transactional
-    override fun createPost(userId: UserPrincipal,
-                            resolutionId: Long,
-                            type: PostType,
-                            request: PostRequest
+    override fun createPost(
+        userId: UserPrincipal,
+        resolutionId: Long,
+        type: PostType,
+        request: PostRequest
     ): PostResponse {
-        val user = userRepository.findByIdOrNull(userId.id) ?: throw UserNotFoundException()
-        val resolution = resolutionRepository.findByIdOrNull(resolutionId) ?: throw ModelNotFoundException("목표", resolutionId)
-        val post = Post(
-            title = request.title,
-            content = request.content,
-            imageUrl = request.imageUrl,
-            type = type,
-            userId = user,
-            resolutionId = resolution
-        )
-            // check 로 선택하면 제목만 입력가능, 나머지는 입력 x
-            if (type == PostType.CHECK) {
-                post.content = ""
-                post.imageUrl = ""
-            }
+        val resolution = resolutionRepository.findByIdOrNull(resolutionId)
+            ?: throw ModelNotFoundException("목표", resolutionId)
 
-        return postRepository.save(post).let { PostResponse.from(post) }
+        if (userId.id == resolution.author.id){
+            val user = userRepository.findByIdOrNull(userId.id) ?: throw UserNotFoundException()
+            when {
+                resolution.dailyStatus -> throw CheckAlreadyCompletedException()
+                resolution.completeStatus -> throw ResolutionAlreadyCompletedException()
+                else -> return resolution
+                    .let {
+                        it.updateProgress()
+                        postRepository.save(PostRequest.of(request, resolution, type, user))
+                    }
+                    .let { PostResponse.from(it)}
+            }
+        }
+        else throw PermissionDeniedException()
     }
 
     // post 수정
     @Transactional
-    override fun updatePost(userId: UserPrincipal, type: PostType, postId: Long, request: PostRequest): PostResponse {
-        userRepository.findByIdOrNull(userId.id) ?: throw UserNotFoundException()
+    override fun updatePost(
+        userId: UserPrincipal,
+        resolutionId: Long,
+        type: PostType,
+        postId: Long,
+        request: PostRequest
+    ): PostResponse {
         val post = postRepository.findByIdOrNull(postId) ?: throw ModelNotFoundException("게시글", postId)
+        val resolution = resolutionRepository.findByIdOrNull(resolutionId)
+            ?: throw ModelNotFoundException("목표", resolutionId)
 
-        // 작성 포스트 타입 확인
-        if (type == post.type) {
-            // 작성자 확인
-            if (post.userId?.id == userId.id) {
-                // 작성 타입별 입력 폼 구분
-                if (post.type == PostType.CHECK) {
-                    val (title) = request
-                    post.title = title
-                    post.content = ""
-                    post.imageUrl = ""
-
-                } else if (post.type == PostType.APPEND) {
-                    val (title, content, imageUrl) = request
-                    post.title = title
-                    post.content = content
-                    post.imageUrl = imageUrl
-                }
-
-            } else {
-                throw PermissionDeniedException()
-            }
-        } else {
-            throw TypeNotFoundException()
+        if (userId.id == post.userId?.id && post.resolutionId?.id == resolution.id) {
+            post.updatePost(request.title, request.content, request.imageUrl, type)
+            return PostResponse.from(post)
         }
-
-        return postRepository.save(post).let { PostResponse.from(post) }
+        else throw PermissionDeniedException()
     }
 
     // post 삭제

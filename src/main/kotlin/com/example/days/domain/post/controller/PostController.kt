@@ -22,23 +22,26 @@ class PostController(
 ) {
 
     @Operation(summary = "포스트 목록조회")
-    @GetMapping
-    fun getAllPostList(): ResponseEntity<List<PostListResponse>> {
-        return ResponseEntity.status(HttpStatus.OK).body(postService.getAllPostList())
+    @GetMapping("/{resolutionId}")
+    fun getAllPostList(@PathVariable resolutionId: Long): ResponseEntity<List<PostListResponse>> {
+        return ResponseEntity.status(HttpStatus.OK).body(postService.getAllPostList(resolutionId))
     }
 
     @Operation(summary = "포스트 단건조회")
-    @GetMapping("/{postId}")
-    fun getPost(@PathVariable postId: Long): ResponseEntity<PostWithCommentResponse> {
-        return ResponseEntity.status(HttpStatus.OK).body(postService.getPostById(postId))
+    @GetMapping("/{resolutionId}/{postId}")
+    fun getPost(
+        @PathVariable postId: Long,
+        @PathVariable resolutionId: Long,
+        ): ResponseEntity<PostWithCommentResponse> {
+        return ResponseEntity.status(HttpStatus.OK).body(postService.getPostById(resolutionId, postId))
     }
 
     @Operation(summary = "포스트 작성")
-    @PostMapping
+    @PostMapping("/{resolutionId}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     fun creatPost(
         @AuthenticationPrincipal userId: UserPrincipal,
-        resolutionId: Long,
+        @PathVariable resolutionId: Long,
         type: PostType,
         @RequestBody request: PostRequest
     ): ResponseEntity<PostResponse> {
@@ -46,23 +49,25 @@ class PostController(
     }
 
     @Operation(summary = "포스트 수정")
-    @PutMapping("/{postId}")
+    @PutMapping("/{resolutionId}/{postId}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     fun updatePost(
         @AuthenticationPrincipal userId: UserPrincipal,
         type: PostType,
         @PathVariable postId: Long,
+        @PathVariable resolutionId: Long,
         @RequestBody request: PostRequest
     ): ResponseEntity<PostResponse> {
-        return ResponseEntity.status(HttpStatus.OK).body(postService.updatePost(userId, type, postId, request))
+        return ResponseEntity.status(HttpStatus.OK).body(postService.updatePost(userId, resolutionId, type, postId, request))
     }
 
     @Operation(summary = "포스트 삭제")
-    @DeleteMapping("/{postId}")
+    @DeleteMapping("/{resolutionId}/{postId}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     fun deletePost(
         @AuthenticationPrincipal userId: UserPrincipal,
-        @PathVariable postId: Long
+        @PathVariable postId: Long,
+        @PathVariable resolutionId: Long
     ): ResponseEntity<DeleteResponse> {
         postService.deletePost(userId, postId)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
