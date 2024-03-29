@@ -6,17 +6,17 @@ import com.example.days.global.infra.queryDSL.QueryDslSupport
 import org.springframework.stereotype.Repository
 
 @Repository
-class QueryDslUserRepository : QueryDslSupport() {
+class UserRepositoryImpl : QueryDslSupport(), CustomUserRepository {
 
     private val user = QUser.user
 
-    fun searchUserByNickname(nickname: String): List<User> {
+    override fun searchUserByNickname(nickname: String): List<User> {
         return queryFactory.selectFrom(user)
             .where(user.nickname.containsIgnoreCase(nickname))
             .fetch()
     }
 
-    fun seacrhUserByAccountIdAndNickname(accountId: String): List<User> {
+    override fun seacrhUserByAccountIdAndNickname(accountId: String): List<User> {
         return queryFactory.selectFrom(user)
             .where(user.accountId.containsIgnoreCase(accountId))
             .fetch()

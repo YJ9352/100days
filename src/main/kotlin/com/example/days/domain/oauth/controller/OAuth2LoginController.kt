@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping()
+@RequestMapping("/login/oauth2")
 class OAuth2Controller(
     private val oauth2LoginService: OAuth2LoginService,
     private val oauth2ClientService: OAuth2ClientService
 ) {
 
     // login 페이지로 redirect
-    @GetMapping("/oauth2/login/code/{provider}")
+    @GetMapping("/code/{provider}")
     fun redirectLoginPage(
         @PathVariable provider: OAuth2Provider,
         response: HttpServletResponse
@@ -30,12 +30,12 @@ class OAuth2Controller(
     }
 
     // AuthorizationCode 로 사용자 인증 처리 해주는 api
-    @GetMapping("/oauth2/callback/{provider}")
+    @GetMapping("/callback/{provider}")
     fun callback(
         @PathVariable provider: OAuth2Provider,
         response: HttpServletResponse,
         @RequestParam(name = "code") authorizationCode: String
-    ): LoginResponse {
+    ): String {
         return oauth2LoginService.login(provider, response, authorizationCode)
     }
 

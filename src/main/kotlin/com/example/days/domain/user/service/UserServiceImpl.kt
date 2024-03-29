@@ -13,7 +13,7 @@ import com.example.days.domain.user.dto.response.SignUpResponse
 import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.model.User
 import com.example.days.domain.user.model.UserRole
-import com.example.days.domain.user.repository.QueryDslUserRepository
+import com.example.days.domain.user.repository.UserRepositoryImpl
 import com.example.days.domain.user.repository.UserRepository
 import com.example.days.global.common.exception.common.ModelNotFoundException
 import com.example.days.global.common.exception.user.*
@@ -33,7 +33,6 @@ import java.util.*
 @Service
 class UserServiceImpl(
     private val userRepository: UserRepository,
-    private val queryDslUserRepository: QueryDslUserRepository,
     private val mailUtility: MailUtility,
     private val encoder: PasswordEncoder,
     private val jwtPlugin: JwtPlugin,
@@ -98,7 +97,7 @@ class UserServiceImpl(
     }
 
     override fun searchUserEmail(nickname: String): List<EmailResponse> {
-        return queryDslUserRepository.searchUserByNickname(nickname).map { EmailResponse.from(it) }
+        return userRepository.searchUserByNickname(nickname).map { EmailResponse.from(it) }
     }
 
     @Transactional
@@ -161,7 +160,7 @@ class UserServiceImpl(
 
     // 고유아이디 or 닉네임 검색기능 > 닉네임의 경우 동일아이디 전부 출력
     override fun searchUserAccountId(accountId: String): List<AccountSearchResponse> {
-        return queryDslUserRepository.seacrhUserByAccountIdAndNickname(accountId).map { AccountSearchResponse.from(it) }
+        return userRepository.seacrhUserByAccountIdAndNickname(accountId).map { AccountSearchResponse.from(it) }
     }
 
     @Scheduled(cron = "0 0 12 * * ?")

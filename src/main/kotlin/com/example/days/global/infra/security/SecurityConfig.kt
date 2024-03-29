@@ -20,7 +20,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 class SecurityConfig(
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
     private val clientRegistrationRepository: ClientRegistrationRepository,
-    private val oauth2LoginService: OAuth2LoginService
+    private val oAuth2LoginService: OAuth2LoginService
 ) {
 
     @Bean
@@ -30,7 +30,7 @@ class SecurityConfig(
             .formLogin { it.disable() }
             .csrf { it.disable() }
             .cors { it.disable() }
-            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+//            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .headers { it.frameOptions { option -> option.disable() } }
             .authorizeHttpRequests {
                 // common
@@ -51,7 +51,9 @@ class SecurityConfig(
                 it.requestMatchers(AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
 
                 // 로그인 임시처리
-                it.requestMatchers(AntPathRequestMatcher("/oauth2/**")).permitAll()
+                it.requestMatchers(AntPathRequestMatcher("/api/user/login/oauth2/**")).permitAll()
+                it.requestMatchers(AntPathRequestMatcher("/api/user/**")).permitAll()
+                it.requestMatchers(AntPathRequestMatcher("/api/user/login/oauth2/**")).permitAll()
                 it.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
       //          it.requestMatchers(AntPathRequestMatcher("/login/oauth2")).permitAll()
       //          it.requestMatchers(AntPathRequestMatcher("/login/oauth2/callback/")).permitAll()
@@ -61,15 +63,16 @@ class SecurityConfig(
                     .anyRequest()
                     .authenticated()
 
- //           }.oauth2Login {
- //               it.authorizationEndpoint{ it.baseUri("/login/oauth2/callback/*") }
- //               it.redirectionEndpoint { it.baseUri("/login/oauth2/code/*") }
- //               it.userInfoEndpoint { oauth2LoginService }
+            }.oauth2Login {
+//                clientRegistrationRepository
+//                it.authorizationEndpoint{ it.baseUri("/login/oauth2/callback") }
+//                it.redirectionEndpoint { it.baseUri("/login/oauth2/code") }
+//                it.userInfoEndpoint { oAuth2LoginService }
 
             }.addFilterBefore(
                 jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter::class.java
-            ).oauth2Login { clientRegistrationRepository }
+            )
             .exceptionHandling {
 //                it.authenticationEntryPoint(authenticationEntryPoint)
 //                it.accessDeniedHandler(accessDeniedHandler)

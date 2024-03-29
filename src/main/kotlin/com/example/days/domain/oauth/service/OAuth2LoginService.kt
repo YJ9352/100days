@@ -13,11 +13,14 @@ class OAuth2LoginService (
     private val jwtPlugin: JwtPlugin
 ) {
 
-    fun login(provider: OAuth2Provider, response: HttpServletResponse, authorizationCode: String): LoginResponse {
-        val info = oauth2ClientService.login(provider, authorizationCode)
-        val user = socialUserService.registerIfAbsent(info)
-        val token = jwtPlugin.accessToken(user.id!!, user.email, user.role)
+    fun login(provider: OAuth2Provider, response: HttpServletResponse, authorizationCode: String): String {
+        return oauth2ClientService.login(provider, authorizationCode)
+            .let { socialUserService.registerIfAbsent(it) }
+            .let { jwtPlugin.accessToken(it.id!!, it.email, it.role) }
 
-        return LoginResponse(token, user.nickname, message = "로그인 되셨습니다.")
+//        val info = oauth2ClientService.login(provider, authorizationCode)
+//        val user = socialUserService.registerIfAbsent(info)
+//        val token = jwtPlugin.accessToken(user.id!!, user.email, user.role)
+//        return LoginResponse(token, user.nickname, message = "로그인 되셨습니다.")
     }
 }
