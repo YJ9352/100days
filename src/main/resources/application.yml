@@ -27,6 +27,7 @@ auth:
     issuer: ${auth_jwt_issuer}
     secret: ${auth_jwt_secret}
     accessTokenExpirationHour: ${auth_jwt_accessTokenExpirationHour}
+
 mail:
     host: smtp.gmail.com
     port: 587
@@ -39,3 +40,6 @@ mail:
             starttls:
               enable: true
               required: true
+
+domain:
+  url: ${domain_url}
