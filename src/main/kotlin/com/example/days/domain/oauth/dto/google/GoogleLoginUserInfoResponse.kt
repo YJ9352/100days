@@ -14,6 +14,5 @@ class GoogleLoginUserInfoResponse(
 ) : OAuth2LoginUserInfo(
     provider = OAuth2Provider.GOOGLE,
     id = id,
-    nickname = nickname,
     email = email
 )

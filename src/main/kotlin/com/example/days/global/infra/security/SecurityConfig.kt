@@ -51,26 +51,15 @@ class SecurityConfig(
                 it.requestMatchers(AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
 
                 // 소셜로그인 임시처리 > 나중에 경로 확인 후 전체수정 필요
-                it.requestMatchers(AntPathRequestMatcher("/oauth2/**")).permitAll()
-                it.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-      //          it.requestMatchers(AntPathRequestMatcher("/login/oauth2")).permitAll()
-      //          it.requestMatchers(AntPathRequestMatcher("/login/oauth2/callback/")).permitAll()
-      //          it.requestMatchers(AntPathRequestMatcher("/error")).permitAll()
+                it.requestMatchers(AntPathRequestMatcher("/login/oauth2")).permitAll()
+                it.requestMatchers(AntPathRequestMatcher("/login/oauth2/callback")).permitAll()
+                it.requestMatchers(AntPathRequestMatcher("/error")).permitAll()
 
-//                it.requestMatchers(PathRequest.toH2Console()).permitAll()
-                    .anyRequest()
-                    .authenticated()
-
- //           }.oauth2Login {
- //               it.authorizationEndpoint{ it.baseUri("/login/oauth2/callback/*") }
- //               it.redirectionEndpoint { it.baseUri("/login/oauth2/code/*") }
- //               it.userInfoEndpoint { oauth2LoginService }
-
+                it.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated()
             }.addFilterBefore(
                 jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter::class.java
-            ).oauth2Login { clientRegistrationRepository }
-            .exceptionHandling {
+            ).exceptionHandling {
 //                it.authenticationEntryPoint(authenticationEntryPoint)
 //                it.accessDeniedHandler(accessDeniedHandler)
             }

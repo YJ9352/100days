@@ -8,6 +8,5 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming
 open class OAuth2LoginUserInfo (
     val provider: OAuth2Provider,
     val id: String,
-    val nickname: String,
     val email: String
 )

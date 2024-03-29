@@ -13,6 +13,5 @@ class KakaoUserInfoResponse(
 ) : OAuth2LoginUserInfo(
     provider = OAuth2Provider.KAKAO,
     id = id.toString(),
-    nickname = properties.nickname,
     email = account.email
 )

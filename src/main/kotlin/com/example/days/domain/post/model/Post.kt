@@ -24,11 +24,6 @@ class Post(
     @Column(name = "type")
     val type: PostType,
 
-    // id
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    val categoryId: Category?,
-
     @ManyToOne
     @JoinColumn(name = "resolution_id")
     val resolutionId: Resolution?,

@@ -60,13 +60,11 @@ class PostServiceImpl(
     // post 작성 > 데일리 체크에서 달성도 체크 후 이쪽으로 넘어옴
     @Transactional
     override fun createPost(userId: UserPrincipal,
-                            categoryId: Long,
                             resolutionId: Long,
                             type: PostType,
                             request: PostRequest
     ): PostResponse {
         val user = userRepository.findByIdOrNull(userId.id) ?: throw UserNotFoundException()
-        val category = categoryRepository.findByIdOrNull(categoryId) ?: throw ModelNotFoundException("카테고리", categoryId)
         val resolution = resolutionRepository.findByIdOrNull(resolutionId) ?: throw ModelNotFoundException("목표", resolutionId)
         val post = Post(
             title = request.title,
@@ -74,8 +72,7 @@ class PostServiceImpl(
             imageUrl = request.imageUrl,
             type = type,
             userId = user,
-            resolutionId = resolution,
-            categoryId = category
+            resolutionId = resolution
         )
             // check 로 선택하면 제목만 입력가능, 나머지는 입력 x
             if (type == PostType.CHECK) {

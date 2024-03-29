@@ -17,7 +17,7 @@ interface PostService {
     fun getPostById(postId: Long): PostWithCommentResponse
 
     // post 작성, 수정, 삭제
-    fun createPost(userId: UserPrincipal, categoryId: Long, resolutionId: Long, type: PostType, request: PostRequest): PostResponse
+    fun createPost(userId: UserPrincipal, resolutionId: Long, type: PostType, request: PostRequest): PostResponse
     fun updatePost(userId: UserPrincipal, type: PostType, postId: Long, request: PostRequest): PostResponse
     fun deletePost(userId: UserPrincipal, postId: Long): DeleteResponse
 
