@@ -7,7 +7,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
 class WebConfig(
-    @Value("\${domain.url}") private val domainUrl: String
+    @Value("\${domain.url}") private val domainUrl: String,
+    @Value("\${api.url}") private val apiUrl: String
 ) : WebMvcConfigurer {
 
 
@@ -18,7 +19,7 @@ class WebConfig(
     override fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**") // 모든 경로에 대해서
             .allowedOrigins(
-                "http://localhost:8080", "https://api.100days.life", "http://localhost:8090", domainUrl
+                "http://localhost:8080", apiUrl, "http://localhost:8090", domainUrl
             ) // 이 출처로부터의 요청만 허용
             .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS")
             .allowedHeaders("*")

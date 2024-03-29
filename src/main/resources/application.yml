@@ -43,3 +43,5 @@ mail:
 
 domain:
   url: ${domain_url}
+api:
+  url: ${api.url}
