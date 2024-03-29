@@ -5,19 +5,19 @@ import com.example.days.domain.oauth.service.OAuth2ClientService
 import com.example.days.domain.oauth.service.OAuth2LoginService
 import com.example.days.domain.user.dto.response.LoginResponse
 import jakarta.servlet.http.HttpServletResponse
-import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("")
 class OAuth2Controller(
+    private val oAuth2LoginService: OAuth2LoginService,
     private val oauth2ClientService: OAuth2ClientService
 ) {
 
     // login 페이지로 redirect
     @PreAuthorize("isAnonymous()")
-    @GetMapping("/oauth2/login/{provider}")
+    @GetMapping("/oauth2/login/code/{provider}")
     fun redirectLoginPage(
         @PathVariable provider: OAuth2Provider,
         response: HttpServletResponse
@@ -34,8 +34,7 @@ class OAuth2Controller(
         response: HttpServletResponse,
         @RequestParam(name = "code") authorizationCode: String
     ): LoginResponse {
-        oauth2ClientService.login(provider, authorizationCode)
-        return LoginResponse(authorizationCode)
+        return oAuth2LoginService.login(provider, response, authorizationCode)
     }
 
 }
