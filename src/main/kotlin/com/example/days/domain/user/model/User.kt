@@ -1,7 +1,7 @@
 package com.example.days.domain.user.model
 
 import com.example.days.domain.oauth.model.OAuth2Provider
-import com.example.days.domain.user.dto.request.ModifyInfoRequest
+import com.example.days.domain.user.dto.request.ModifyMyInfoRequest
 import com.example.days.global.entity.BaseEntity
 import jakarta.persistence.*
 import java.time.LocalDate
@@ -37,7 +37,7 @@ class User(
 
     // 고유 id
     @Column(name = "account_id")
-    val accountId: String,
+    var accountId: String,
 
     // social login ID
     @Enumerated(EnumType.STRING)
@@ -69,8 +69,9 @@ class User(
         isDelete = true
     }
 
-    fun updateUser(request: ModifyInfoRequest) {
+    fun updateUser(request: ModifyMyInfoRequest) {
         nickname = request.nickname
+        accountId = request.accountId
         birth = request.birth
     }
 }

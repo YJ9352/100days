@@ -1,15 +1,8 @@
 package com.example.days.domain.user.service
 
 import com.example.days.domain.mail.dto.EmailRequest
-import com.example.days.domain.user.dto.response.EmailResponse
-import com.example.days.domain.user.dto.request.LoginRequest
-import com.example.days.domain.user.dto.request.ModifyInfoRequest
-import com.example.days.domain.user.dto.request.SignUpRequest
-import com.example.days.domain.user.dto.request.UserPasswordRequest
-import com.example.days.domain.user.dto.response.AccountSearchResponse
-import com.example.days.domain.user.dto.response.LoginResponse
-import com.example.days.domain.user.dto.response.ModifyInfoResponse
-import com.example.days.domain.user.dto.response.SignUpResponse
+import com.example.days.domain.user.dto.request.*
+import com.example.days.domain.user.dto.response.*
 import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.model.User
 import com.example.days.domain.user.model.UserRole
@@ -120,14 +113,14 @@ class UserServiceImpl(
     }
 
     // 회원정보 조회
-    override fun getMyInfo(userId: UserPrincipal): ModifyInfoResponse {
+    override fun getMyInfo(userId: UserPrincipal): ModifyMyInfoResponse {
         val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("User", userId.id)
-        return user.let { ModifyInfoResponse.from(it) }
+        return user.let { ModifyMyInfoResponse.from(it) }
     }
 
     // 회원정보 수정
     @Transactional
-    override fun modifyMyInfo(userId: UserPrincipal, request: ModifyInfoRequest): ModifyInfoResponse {
+    override fun modifyMyInfo(userId: UserPrincipal, request: ModifyMyInfoRequest): ModifyMyInfoResponse {
         val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("user", userId.id)
 
         // 기존 비밀번호 재입력 후 일치 시 수정 가능
@@ -138,7 +131,7 @@ class UserServiceImpl(
             throw MismatchPasswordException()
         }
 
-        return ModifyInfoResponse(user.email, user.nickname, user.birth)
+        return ModifyMyInfoResponse(user.email, user.nickname, user.birth)
     }
 
     // 회원탈퇴 (상태 변경 후 7일 뒤 삭제)
