@@ -19,8 +19,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 @EnableMethodSecurity
 class SecurityConfig(
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
-    private val clientRegistrationRepository: ClientRegistrationRepository,
-    private val oauth2LoginService: OAuth2LoginService
+//    private val clientRegistrationRepository: ClientRegistrationRepository,
+//    private val oauth2LoginService: OAuth2LoginService
 ) {
 
     @Bean

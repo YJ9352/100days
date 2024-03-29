@@ -1,6 +1,5 @@
 package com.example.days.domain.post.model
 
-import com.example.days.domain.category.model.Category
 import com.example.days.domain.comment.model.Comment
 import com.example.days.domain.resolution.model.Resolution
 import com.example.days.domain.user.model.User

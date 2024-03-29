@@ -1,6 +1,5 @@
 package com.example.days.domain.post.service
 
-import com.example.days.domain.category.repository.CategoryRepository
 import com.example.days.domain.comment.model.Comment
 import com.example.days.domain.comment.repository.CommentRepository
 import com.example.days.domain.post.dto.request.PostRequest
@@ -28,7 +27,6 @@ class PostServiceImpl(
     private val userRepository: UserRepository,
     private val postRepository: PostRepository,
     private val resolutionRepository: ResolutionRepository,
-    private val categoryRepository: CategoryRepository,
     private val commentRepository: CommentRepository
 ) : PostService {
 

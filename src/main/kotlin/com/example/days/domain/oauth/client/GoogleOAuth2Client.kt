@@ -24,8 +24,7 @@ class GoogleOAuth2Client(
             .append("?client_id=").append(clientId)
             .append("&redirect_uri=").append(redirectUrl)
             .append("&response_type=").append("code")
-            .append("&scope=")
-            .append("https://www.googleapis.com/auth/userinfo.email")
+            .append("&scope=").append(scope)
             .toString()
     }
 
