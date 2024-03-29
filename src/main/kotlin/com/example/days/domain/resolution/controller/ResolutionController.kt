@@ -43,7 +43,7 @@ class ResolutionController (
     @GetMapping
     fun getResolutionListPaginated(
         @RequestParam(defaultValue = "0") page: Int,
-        sortOrder: SortOrder?
+        @RequestParam sortOrder: SortOrder?
     ): ResponseEntity<Page<SimpleResolutionResponse>>{
         val resolutionList = resolutionService.getResolutionListPaginated(page, sortOrder)
         return ResponseEntity.ok(resolutionList)
@@ -77,6 +77,29 @@ class ResolutionController (
     fun getResolutionRanking(): ResponseEntity<List<SimpleResolutionResponse>>{
         val rankedResolution = resolutionService.getResolutionRanking()
         return ResponseEntity.ok(rankedResolution)
+    }
+
+    @Operation(summary = "내 목표 단건 조회")
+    @GetMapping("/myResolution/{resolutionId}")
+    fun getMyResolution(
+        @PathVariable resolutionId: Long,
+        @AuthenticationPrincipal userPrincipal: UserPrincipal
+    ): ResponseEntity<ResolutionResponse>{
+        val userId = userPrincipal.id
+        val resolution = resolutionService.getMyResolutionById(resolutionId, userId)
+        return ResponseEntity.ok(resolution)
+    }
+
+    @Operation(summary = "내 목표 전체 조회(페이징)")
+    @GetMapping("/myResolution")
+    fun getMyResolutionListPaginated(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam sortOrder: SortOrder?,
+        @AuthenticationPrincipal userPrincipal: UserPrincipal
+    ): ResponseEntity<Page<SimpleResolutionResponse>>{
+        val userId = userPrincipal.id
+        val resolutionList = resolutionService.getMyResolutionListPaginated(page, sortOrder, userId)
+        return ResponseEntity.ok(resolutionList)
     }
 
 }

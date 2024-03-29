@@ -14,4 +14,6 @@ interface ResolutionService {
     fun updateResolution(resolutionId: Long, userId: Long ,resolutionRequest: ResolutionRequest): ResolutionResponse
     fun deleteResolution(resolutionId: Long, userId: Long)
     fun getResolutionRanking(): List<SimpleResolutionResponse>
+    fun getMyResolutionById(resolutionId: Long, userId: Long): ResolutionResponse
+    fun getMyResolutionListPaginated(page: Int, sortOrder: SortOrder?, userId: Long): Page<SimpleResolutionResponse>
 }

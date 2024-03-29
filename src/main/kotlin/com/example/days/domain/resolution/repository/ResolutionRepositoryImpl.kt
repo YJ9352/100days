@@ -21,6 +21,16 @@ class ResolutionRepositoryImpl: QueryDslSupport(), QueryResolutionRepository {
     private val resolution = QResolution.resolution
     override fun findByPageable(page: Int, sortOrder: SortOrder?): Page<Resolution> {
         val whereClause = BooleanBuilder()
+        return executeQuery(page, sortOrder, whereClause)
+    }
+
+    override fun findByMyResolutionPageable(page: Int, sortOrder: SortOrder?, userId: Long): Page<Resolution> {
+        val whereClause = BooleanBuilder()
+        whereClause.and(resolution.author.id.eq(userId))
+        return executeQuery(page, sortOrder, whereClause)
+    }
+
+    private fun executeQuery(page: Int, sortOrder: SortOrder?, whereClause: BooleanBuilder): Page<Resolution> {
         val pageable: PageRequest = PageRequest.of(page, 10, Sort.by(Sort.Direction.ASC, sortOrder.toString()))
         val totalCount = queryFactory.select(resolution.count()).from(resolution).where(whereClause).fetchOne() ?: 0L
 
