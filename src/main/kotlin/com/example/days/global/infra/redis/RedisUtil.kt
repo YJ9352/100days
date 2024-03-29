@@ -31,6 +31,19 @@ class RedisUtil(
         valueOperations.set(key, value, expireDuration)
     }
 
+    // 메일 인증코드 확인
+    fun getDataMatch(key: String, value: String, duration: Long): String? {
+        val storedValue = getData(key)
+        val oldValue = stringRedisTemplate.opsForValue().getAndSet(key, value)
+        if (oldValue == storedValue) {
+            val expireDuration: Duration = Duration.ofSeconds(duration)
+            setDataExpire(key, value, duration)
+            return oldValue
+        } else {
+            return null
+        }
+    }
+
     fun deleteData(key: String) {
         stringRedisTemplate.delete(key)
     }
