@@ -13,8 +13,6 @@ class RedisUtil(
     private val redisTemplate: RedisTemplate<String, String>
 ) {
 
-    val token = "tokens"
-
     fun getData(key: String): String? {
         val valueOperations: ValueOperations<String, String> = stringRedisTemplate.opsForValue()
         return valueOperations.get(key)
@@ -31,15 +29,20 @@ class RedisUtil(
         valueOperations.set(key, value, expireDuration)
     }
 
+    // 메일 인증코드 확인
+    fun getDataMatch(key: String, value: String, duration: Long): String? {
+        val storedValue = getData(key)
+        val oldValue = stringRedisTemplate.opsForValue().getAndSet(key, value)
+        if (oldValue == storedValue) {
+            Duration.ofSeconds(duration)
+            setDataExpire(key, value, duration)
+            return oldValue
+        } else {
+            return null
+        }
+    }
+
     fun deleteData(key: String) {
         stringRedisTemplate.delete(key)
-    }
-
-    fun saveRefreshToken(id: String, refreshToken: String) {
-        redisTemplate.opsForHash<String, String>().put(id, refreshToken, token)
-    }
-
-    fun getRefreshToken(id: String): String? {
-        return redisTemplate.opsForHash<String, String>().get(token, id)
     }
 }

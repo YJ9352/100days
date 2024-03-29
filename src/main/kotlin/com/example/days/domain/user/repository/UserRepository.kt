@@ -1,5 +1,6 @@
 package com.example.days.domain.user.repository
 
+import com.example.days.domain.oauth.model.OAuth2Provider
 import com.example.days.domain.user.model.Status
 import com.example.days.domain.user.model.User
 import jakarta.transaction.Transactional
@@ -10,13 +11,14 @@ import org.springframework.data.repository.query.Param
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-interface UserRepository: JpaRepository<User, Long> {
+interface UserRepository: JpaRepository<User, Long>, CustomUserRepository {
     fun existsByEmail(email: String): Boolean
     fun existsByNickname(nickname: String): Boolean
     fun findUserByEmail(email: String): User?
     fun findByNickname(nickname: String): User?
 
-    fun findUserById(id: Long): User?
+    fun existsByProviderAndProviderId(provider: OAuth2Provider, toString: String): Boolean
+    fun findByProviderAndProviderId(provider: OAuth2Provider, toString: String): User
 
     @Modifying
     @Transactional
