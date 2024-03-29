@@ -1,8 +1,10 @@
 package com.example.days.domain.user.model
 
 import com.example.days.domain.oauth.model.OAuth2Provider
-import com.example.days.domain.user.dto.request.ModifyInfoRequest
+import com.example.days.domain.user.dto.request.ModifyMyInfoRequest
 import com.example.days.global.entity.BaseEntity
+import com.example.days.global.infra.regex.RegexFunc
+import com.example.days.global.support.RandomCode
 import jakarta.persistence.*
 import java.time.LocalDate
 
@@ -37,7 +39,7 @@ class User(
 
     // 고유 id
     @Column(name = "account_id")
-    val accountId: String,
+    var accountId: String,
 
     // social login ID
     @Enumerated(EnumType.STRING)
@@ -69,8 +71,12 @@ class User(
         isDelete = true
     }
 
-    fun updateUser(request: ModifyInfoRequest) {
+    fun updateUser(request: ModifyMyInfoRequest) {
+        val account = request.accountId
+            .ifBlank { RandomCode(RegexFunc()).generateRandomCode(12) }
+
         nickname = request.nickname
+        accountId = account
         birth = request.birth
     }
 }

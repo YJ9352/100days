@@ -18,15 +18,15 @@ class SocialUserService (
 
     fun registerIfAbsent(userInfo: OAuth2LoginUserInfo): User {
         if (!userRepository.existsByProviderAndProviderId(userInfo.provider, userInfo.id)) {
-            val random = RandomCode(RegexFunc()).generateRandomCode(10)
+            val random = RandomCode(RegexFunc()).generateRandomCode(12)
             val pass = PasswordEncoderConfig().passwordEncoder().encode(random)
 
             val user = User(
                 email = userInfo.email,
-                nickname = "",
+                nickname = userInfo.nickname,
                 password = pass,
                 birth = LocalDate.now(),
-                accountId = RandomCode(RegexFunc()).generateRandomCode(12),
+                accountId = random,
                 isDelete = false,
                 status = Status.ACTIVE,
                 role = UserRole.USER,
@@ -36,6 +36,6 @@ class SocialUserService (
             userRepository.save(user)
         }
 
-        return userRepository.findByProviderAndProviderId(userInfo.provider, userInfo.id)
+        return userRepository.findByEmailAndProviderId(userInfo.email, userInfo.provider.name)
     }
 }

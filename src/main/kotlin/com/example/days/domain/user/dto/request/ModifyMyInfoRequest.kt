@@ -5,14 +5,13 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
 import java.time.LocalDate
 
-data class SignUpRequest(
-
+data class ModifyMyInfoRequest(
     @NotBlank
     @Schema(
-        description = "메일주소",
-        example = "예시) example@email.com"
+        description = "비밀번호",
+        example = "비밀번호는 8~16자의 영문 대소문자, 숫자, 특수문자로 이루어져야 합니다."
     )
-    val email: String,
+    val password: String,
 
     @NotBlank
     @Schema(
@@ -29,20 +28,6 @@ data class SignUpRequest(
     )
     @field:Pattern(regexp = "^[a-zA-Z0-9\\p{Punct}]{12}$")
     val accountId: String,
-
-    @NotBlank
-    @Schema(
-        description = "비밀번호",
-        example = "비밀번호는 8~16자의 영문 대소문자, 숫자, 특수문자로 이루어져야 합니다."
-    )
-    val password: String,
-
-    @NotBlank
-    @Schema(
-        description = "비밀번호 재확인",
-        example = "입력하신 비밀번호를 한번 더 입력해주세요."
-    )
-    val newPassword: String,
-
     val birth: LocalDate
 )
+

@@ -12,19 +12,19 @@ import org.springframework.web.client.body
 
 @Component
 class GoogleOAuth2Client(
-    @Value("\${spring.security.oauth2.client.registration.google.client-id}") val clientId: String,
-    @Value("\${spring.security.oauth2.client.registration.google.client-secret}") val clientSecret: String,
-    @Value("\${spring.security.oauth2.client.registration.google.redirect-uri}") val redirectUrl: String,
-    @Value("\${spring.security.oauth2.client.registration.google.scope}") val scope: Set<String>,
+    @Value("\${oauth2.google.client-id}") val clientId: String,
+    @Value("\${oauth2.google.client-secret}") val clientSecret: String,
+    @Value("\${oauth2.google.redirect-uri}") val redirectUrl: String,
     private val restClient: RestClient
 ) : OAuth2Client {
 
     override fun generateLoginPageUrl(): String {
         return StringBuilder(GOOGLE_AUTH_BASE_URL)
+            .append("&response_type=").append("code")
             .append("?client_id=").append(clientId)
             .append("&redirect_uri=").append(redirectUrl)
-            .append("&response_type=").append("code")
-            .append("&scope=").append(scope)
+            .append("&scope=")
+            .append("https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email")
             .toString()
     }
 
@@ -33,8 +33,8 @@ class GoogleOAuth2Client(
             "grant_type" to "authorization_code",
             "client_id" to clientId,
             "client_secret" to clientSecret,
-            "redirect_uri" to redirectUrl,
-            "code" to authorizationCode
+            "code" to authorizationCode,
+            "redirect_uri" to redirectUrl
         )
         return restClient.post()
             .uri("$GOOGLE_TOKEN_BASE_URL/token")
@@ -60,8 +60,8 @@ class GoogleOAuth2Client(
     }
 
     companion object {
-        const val GOOGLE_AUTH_BASE_URL = "https://accounts.google.com/o/oauth2/v2/auth"
-        const val GOOGLE_API_BASE_URL = "https://www.googleapis.com/oauth2/v2"
-        const val GOOGLE_TOKEN_BASE_URL = "https://oauth2.googleapis.com"
+        private const val GOOGLE_AUTH_BASE_URL = "https://accounts.google.com/o/oauth2/v2/auth"
+        private const val GOOGLE_API_BASE_URL = "https://www.googleapis.com/oauth2/v2"
+        private const val GOOGLE_TOKEN_BASE_URL = "https://oauth2.googleapis.com"
     }
 }
