@@ -6,12 +6,14 @@ data class SimpleResolutionResponse(
     val title: String = "",
     val category: String = "",
     val likeCount: Long = 0L,
+    val id: Long?
 ){
     companion object{
         fun from(resolution: Resolution) = SimpleResolutionResponse(
             title = resolution.title,
             category = resolution.category.name,
-            likeCount = resolution.likeCount
+            likeCount = resolution.likeCount,
+            id = resolution.id
         )
     }
 }
