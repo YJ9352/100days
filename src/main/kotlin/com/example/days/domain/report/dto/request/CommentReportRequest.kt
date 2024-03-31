@@ -8,7 +8,7 @@ data class CommentReportRequest(
     val reportedComment: String,
 
     @field:NotBlank(message = "신고 상태를 입력해주세요")
-    val reportStatus: ReportStatus,
+    val reportStatus: String,
 
     @field:NotBlank(message = "신고 사유를 입력해주세요")
     val content: String

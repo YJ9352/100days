@@ -23,9 +23,8 @@ class UserReport(
     @Column(name = "content")
     var content: String,
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "reportStatus")
-    val reportStatus: ReportStatus,
+    val reportStatus: String,
 
 
     ) : BaseEntity() {
