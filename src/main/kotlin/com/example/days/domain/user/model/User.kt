@@ -7,6 +7,7 @@ import com.example.days.global.infra.regex.RegexFunc
 import com.example.days.global.support.RandomCode
 import jakarta.persistence.*
 import java.time.LocalDate
+import kotlin.random.Random
 
 @Entity
 @Table(name = "users")
@@ -72,8 +73,10 @@ class User(
     }
 
     fun updateUser(request: ModifyMyInfoRequest) {
+        // 요청된 accountId가 비어있으면 랜덤 코드를 생성
         val account = request.accountId
-            .ifBlank { RandomCode(RegexFunc()).generateRandomCode(12) }
+            .ifBlank { RandomCode(RegexFunc()).generateRandomCode(Random.nextInt(5, 15)) }
+            .let { "@$it" } // 생성문자 앞에 id 식별용 @붙임
 
         nickname = request.nickname
         accountId = account

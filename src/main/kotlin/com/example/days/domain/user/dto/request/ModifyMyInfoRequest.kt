@@ -26,7 +26,6 @@ data class ModifyMyInfoRequest(
         description = "회원 ID",
         example = "12자리 문자를 입력해주세요. 비워두시면 랜덤하게 생성됩니다."
     )
-    @field:Pattern(regexp = "^[a-zA-Z0-9\\p{Punct}]{12}$")
     val accountId: String,
     val birth: LocalDate
 )
