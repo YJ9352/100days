@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+import kotlin.random.Random
 
 @Service
 class UserServiceImpl(
@@ -77,7 +78,9 @@ class UserServiceImpl(
         }
 
         // 요청된 accountId가 비어있으면 랜덤 코드를 생성
-        val account = request.accountId.ifBlank { RandomCode(RegexFunc()).generateRandomCode(12) }
+        val account = request.accountId
+            .ifBlank { RandomCode(RegexFunc()).generateRandomCode(Random.nextInt(5, 15)) }
+            .let { "@$it" } // 생성문자 앞에 id 식별용 @붙임
 
         return User(
             email = regexFunc.regexUserEmail(request.email),
