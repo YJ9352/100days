@@ -29,8 +29,8 @@ class MailConfig(
 
         val props = Properties()
         props["mail.smtp.auth"] = auth.toString()
-        props["mail.smtp.starttls_enable"] = enable.toString()
-        props["mail.smtp.starttls_required"] = required.toString()
+        props["mail.smtp.starttls.enable"] = enable.toString()
+        props["mail.smtp.starttls.required"] = required.toString()
 
         javaMailSender.javaMailProperties = props
 
