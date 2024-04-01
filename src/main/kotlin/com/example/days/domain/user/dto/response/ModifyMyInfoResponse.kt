@@ -6,6 +6,7 @@ import java.time.LocalDate
 data class ModifyMyInfoResponse(
     val email: String,
     val nickname: String,
+    val accountId: String,
     val birth: LocalDate
 ){
     companion object {
@@ -13,6 +14,7 @@ data class ModifyMyInfoResponse(
             return ModifyMyInfoResponse(
                 email = user.email,
                 nickname = user.nickname,
+                accountId = user.accountId,
                 birth = user.birth
             )
         }

@@ -22,5 +22,4 @@ class RegexFunc {
     fun isValidPassword(userPassword: String): Boolean {
         return Pattern.matches(pass, userPassword)
     }
-
 }

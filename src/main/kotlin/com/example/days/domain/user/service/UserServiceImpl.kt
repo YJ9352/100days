@@ -144,7 +144,7 @@ class UserServiceImpl(
             throw MismatchPasswordException()
         }
 
-        return ModifyMyInfoResponse(user.email, user.nickname, user.birth)
+        return ModifyMyInfoResponse(user.email, user.nickname, user.accountId, user.birth)
     }
 
     // 회원탈퇴 (상태 변경 후 7일 뒤 삭제)
