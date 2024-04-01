@@ -110,9 +110,9 @@ class UserServiceImpl(
 
         // 이메일이 null 이 아니고, 가입된 사용자일때 메일 발송
         if (user != null && user.email == request.email) {
-            val mail = mailUtility.emailSender(request.email, MailType.CHANGEPASSWORD)
+            val pass = mailUtility.emailSender(request.email, MailType.CHANGEPASSWORD)
             user.email = request.email
-            user.password = mail
+            user.password = pass
             userRepository.save(user)
         } else {
             throw NoSearchUserByEmailException(request.email)

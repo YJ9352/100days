@@ -1,5 +1,6 @@
 package com.example.days.global.infra.mail
 
+import com.example.days.global.common.exception.common.ModelNotFoundException
 import com.example.days.global.infra.redis.RedisUtil
 import com.example.days.global.infra.regex.RegexFunc
 import com.example.days.global.support.RandomCode
@@ -34,14 +35,13 @@ class MailUtility(
         if (type == MailType.VERIFYCODE) {
             // 회원가입용 인증번호 요청일 때
             val redisKey = "verification:$email" // 메일 주소를 기반으로 레디스 키 생성
-            redisUtil.setDataExpire(code, redisKey,300) // redis에 email과 code저장, 인증시간 5분
+            redisUtil.setDataExpire(code, redisKey, 300) // redis에 email과 code저장, 인증시간 5분
             helper.setSubject("회원가입을 위한 이메일 인증번호입니다.")
             helper.setText("이메일 인증 번호는 $code 입니다.")
             helper.setFrom(username)
             javaMailSender.send(message)
 
             return code
-
         } else if (type == MailType.CHANGEPASSWORD) {
             // 비밀번호 재발급일 때
             helper.setSubject("임시 비밀번호를 발급해드립니다.")
@@ -55,7 +55,7 @@ class MailUtility(
             return pass
 
         } else {
-            throw IllegalArgumentException("어떤 메일을 보낼지 선택해주세요.")
+            throw ModelNotFoundException("메일 타입")
         }
     }
 }
