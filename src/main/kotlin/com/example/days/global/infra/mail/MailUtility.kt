@@ -40,7 +40,7 @@ class MailUtility(
             helper.setText("이메일 인증 번호는 $code 입니다.")
             helper.setFrom(username)
             javaMailSender.send(message)
-
+            
             return code
         } else if (type == MailType.CHANGEPASSWORD) {
             // 비밀번호 재발급일 때
@@ -55,7 +55,7 @@ class MailUtility(
             return pass
 
         } else {
-            throw ModelNotFoundException("메일 타입")
+            throw ModelNotFoundException("email")
         }
     }
 }
