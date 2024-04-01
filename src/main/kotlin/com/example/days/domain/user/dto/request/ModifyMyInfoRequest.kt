@@ -24,7 +24,7 @@ data class ModifyMyInfoRequest(
     @NotBlank
     @Schema(
         description = "회원 ID",
-        example = "12자리 문자를 입력해주세요. 비워두시면 랜덤하게 생성됩니다."
+        example = "5~15자리 사이로 작성해주세요. 비워두시면 랜덤하게 생성됩니다."
     )
     val accountId: String,
     val birth: LocalDate
