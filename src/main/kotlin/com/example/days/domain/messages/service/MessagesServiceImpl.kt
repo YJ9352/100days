@@ -29,18 +29,18 @@ class MessagesServiceImpl(
     private val adminMessagesRepository: AdminMessagesRepository
 ) : MessagesService {
     override fun createMessages(req: CreateMessageRequest, userId: Long): MessageSendResponse {
-        val receiverNickname = userRepository.findByNickname(req.receiverNickname) ?: throw UserNotFoundException()
+        val receiverAccountId = userRepository.findByAccountId(req.receiverAccountId) ?: throw UserNotFoundException()
         val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
 
-        if (receiverNickname.status == Status.BAN || receiverNickname.status == Status.WITHDRAW || user.status == Status.BAN || user.status == Status.WITHDRAW) {
-            throw NotMessagesException("이 닉네임은 이미 밴이나 탈퇴처리되어 있어 쪽지를 보낼 수도 받을 수도 없습니다!")
+        if (receiverAccountId.status == Status.BAN || receiverAccountId.status == Status.WITHDRAW || user.status == Status.BAN || user.status == Status.WITHDRAW) {
+            throw NotMessagesException("이미 밴이나 탈퇴처리되어 있어 쪽지를 보낼 수도 받을 수도 없습니다!")
         }
 
         val messages = messagesRepository.save(
             MessagesEntity(
                 title = req.title,
                 content = req.content,
-                receiver = receiverNickname,
+                receiver = receiverAccountId,
                 sender = user,
                 deletedBySender = false,
                 deletedByReceiver = false
@@ -63,7 +63,6 @@ class MessagesServiceImpl(
         return MessageSendResponse.from(sender)
     }
 
-    // 수정할 필요 있음
     @Transactional(readOnly = true)
     override fun sendMessagesAll(pageable: Pageable, userId: Long): Page<MessageSendResponse> {
         return messagesRepository.findAllBySenderIdAndDeletedBySenderFalseOrderByIdDesc(pageable, userId)

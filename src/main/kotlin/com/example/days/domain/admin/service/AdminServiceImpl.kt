@@ -70,7 +70,7 @@ class AdminServiceImpl(
                 throw MismatchPasswordException()
             }
 
-        if(admin.status == Status.BAN) throw throw UserSuspendedException()
+        if(admin.status == Status.BAN) throw UserSuspendedException()
 
         return LoginAdminResponse(
             accessToken = jwtPlugin.accessToken(
@@ -121,19 +121,19 @@ class AdminServiceImpl(
         adminRepository.save(admin)
     }
 
-    override fun getReportUser(pageable: Pageable, reportedUserNickname: String): Page<UserReportResponse> {
-        return reportRepository.findByPageableAndReportedUserNickname(pageable, reportedUserNickname).map { UserReportResponse.from(it) }
+    override fun getReportUser(pageable: Pageable, reportedUserAccountId: String): Page<UserReportResponse> {
+        return reportRepository.findByPageableAndReportedUserAccountId(pageable, reportedUserAccountId).map { UserReportResponse.from(it) }
     }
 
     override fun toUserCreateMessage(req: CreateMessageRequest, userId: Long): AdminMessagesSendResponse {
-        val receiverNickname = userRepository.findByNickname(req.receiverNickname) ?: throw UserNotFoundException()
+        val receiverAccountId = userRepository.findByAccountId(req.receiverAccountId) ?: throw UserNotFoundException()
         val admin = adminRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("Admin", userId)
         // 어드민 가능하게 해야함.
         val adminMessages = adminMessagesRepository.save(
             AdminMessagesEntity(
                 title = req.title,
                 content = req.content,
-                receiver = receiverNickname,
+                receiver = receiverAccountId,
                 admin = admin,
                 deletedByReceiver = false
             )

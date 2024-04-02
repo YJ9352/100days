@@ -7,8 +7,8 @@ data class MessagesReceiveResponse(
     val id: Long,
     val title: String,
     val content: String,
-    val senderNickname: String,
-    val receiverNickname: String,
+    val senderAccountId: String,
+    val receiverAccountId: String,
     val sentAt: LocalDateTime,
     val readStatus: Boolean
 ){
@@ -18,8 +18,8 @@ data class MessagesReceiveResponse(
                 id = messages.id!!,
                 title = messages.title,
                 content = messages.content,
-                receiverNickname = messages.receiver.nickname,
-                senderNickname = messages.sender.nickname,
+                receiverAccountId = messages.receiver.accountId,
+                senderAccountId = messages.sender.accountId,
                 sentAt = messages.sentAt,
                 readStatus = messages.readStatus
             )
