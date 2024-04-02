@@ -14,10 +14,10 @@ class ReportRepositoryImpl : AReportRepository, QueryDslSupport() {
 
     private val report = QUserReport.userReport
 
-    override fun findByPageableAndReportedUserNickname(pageable: Pageable, reportedUserNickname: String?): Page<UserReport> {
+    override fun findByPageableAndReportedUserAccountId(pageable: Pageable, reportedUserAccountId: String?): Page<UserReport> {
         val whereClause = BooleanBuilder()
 
-        reportedUserNickname?.let { whereClause.and(report.reportedUserId.nickname.eq(reportedUserNickname)) }
+        reportedUserAccountId?.let { whereClause.and(report.reportedUserId.accountId.eq(reportedUserAccountId)) }
 
         val totalCount = queryFactory.select(report.count()).from(report).where(whereClause).fetchOne() ?: 0L
 
