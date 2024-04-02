@@ -10,7 +10,9 @@ data class MessagesReceiveResponse(
     val senderAccountId: String,
     val receiverAccountId: String,
     val sentAt: LocalDateTime,
-    val readStatus: Boolean
+    val readStatus: Boolean,
+    val senderNickname: String,
+    val receiverNickname: String
 ){
     companion object {
         fun from(messages: MessagesEntity): MessagesReceiveResponse {
@@ -21,7 +23,9 @@ data class MessagesReceiveResponse(
                 receiverAccountId = messages.receiver.accountId,
                 senderAccountId = messages.sender.accountId,
                 sentAt = messages.sentAt,
-                readStatus = messages.readStatus
+                readStatus = messages.readStatus,
+                senderNickname = messages.receiver.nickname,
+                receiverNickname = messages.sender.nickname
             )
         }
     }
