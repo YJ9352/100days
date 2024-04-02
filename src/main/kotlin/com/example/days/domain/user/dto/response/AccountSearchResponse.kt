@@ -8,8 +8,8 @@ data class AccountSearchResponse (
 ){
     companion object {
         fun from(user: User): AccountSearchResponse {
-            val add = "@" + user.accountId
-            val name = "@" + user.nickname
+            val add = user.accountId
+            val name = user.nickname
             return AccountSearchResponse(accountId = add, nickname = name)
         }
     }

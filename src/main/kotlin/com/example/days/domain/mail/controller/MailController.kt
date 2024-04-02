@@ -18,8 +18,12 @@ class MailController(
     fun mailSend(
         @RequestBody request: EmailRequest
     ): ResponseEntity<Unit> {
-        mailService.sendVerificationEmail(request)
-        return ResponseEntity.status(HttpStatus.OK).build()
+        try {
+            mailService.sendVerificationEmail(request)
+            return ResponseEntity.status(HttpStatus.OK).build()
+        } catch (e: Exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
+        }
     }
 
     @Operation(summary = "인증번호 확인")
