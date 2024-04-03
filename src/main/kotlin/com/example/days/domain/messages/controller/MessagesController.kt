@@ -127,13 +127,14 @@ class MessagesController(
 
     @Operation(summary = "TO 유저 FROM 어드민 쪽지 삭제")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    @DeleteMapping("/admins/{id}")
+    @DeleteMapping("/admins/{id}/{adminNickname}")
     fun deleteMessage(
         @PathVariable id: Long,
+        @PathVariable adminNickname: String,
         @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<AdminMessagesSendResponse> {
         val userId = userPrincipal.id
-        messagesService.deleteUserByAdminMessages(id, userId)
+        messagesService.deleteUserByAdminMessages(id, userId, adminNickname)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 

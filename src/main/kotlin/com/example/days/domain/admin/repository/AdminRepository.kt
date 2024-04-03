@@ -9,4 +9,6 @@ interface AdminRepository : JpaRepository<Admin, Long>, AdminCustomRepository {
     fun existsByNickname(nickname: String): Boolean
 
     fun findAdminByEmail(email: String): Admin?
+
+    fun findAdminByNickname(nickname: String): Admin?
 }

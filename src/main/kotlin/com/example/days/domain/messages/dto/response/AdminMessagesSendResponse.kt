@@ -24,8 +24,8 @@ data class AdminMessagesSendResponse(
                 senderAccountId = messages.admin.nickname,
                 sentAt = messages.sentAt,
                 readStatus = messages.readStatus,
-                senderNickname = messages.receiver.nickname,
-                receiverNickname = messages.admin.nickname
+                senderNickname = messages.admin.nickname,
+                receiverNickname = messages.receiver.nickname,
             )
         }
     }
