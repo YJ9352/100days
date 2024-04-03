@@ -205,7 +205,7 @@
         1. Custom ObjectMapper를 생성하고, JavaTimeModule을 등록해준 후 GenericJackson2JsonRedisSerializer의 파라미터로 넘김.<br>
             → GenericJackson2JsonRedisSerializer는 class타입을 함께 저장하지만 Custom ObjectMapper 사용시 클래스 정보가 제외되기 때문에 역직렬화 문제 발생<br>
             <br>2. LocalDatetime 자료형을 string으로 변환 후 저장<br>
-            → `LocalDateTime not Supported`  에러 발생 해결
+            → `LocalDateTime not Supported`  에러 발생 해결<br>
 ---------------------------------------------------------------------------------------------------------------------------------
 </div>
 </details>
