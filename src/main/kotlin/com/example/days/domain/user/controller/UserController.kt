@@ -102,10 +102,10 @@ class UserController(
     @Operation(summary = "유저 검색(쪽지 등)")
     @GetMapping("/searchAccountId")
     fun searchUserAccountId(
-        @RequestParam(value = "accountId") accountId: String
+        @RequestParam(value = "nickname") nickname: String
     ): ResponseEntity<List<AccountSearchResponse>> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(userService.searchUserAccountId(accountId))
+            .body(userService.searchUserAccountId(nickname))
     }
 }
