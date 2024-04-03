@@ -37,7 +37,7 @@ interface MessagesService {
     fun readAllMessagesByAdmin(pageable: Pageable, userId: Long): Page<AdminMessagesSendResponse>
 
     // 어드민 쪽지 삭제(어드민 or 유저)
-    fun deleteUserByAdminMessages(id: Long, userId: Long)
+    fun deleteUserByAdminMessages(id: Long, userId: Long, adminNickname: String)
 
 
 }

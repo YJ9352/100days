@@ -132,9 +132,9 @@ class MessagesServiceImpl(
     }
 
     @Transactional
-    override fun deleteUserByAdminMessages(id: Long, userId: Long) {
+    override fun deleteUserByAdminMessages(id: Long, userId: Long, adminNickname: String) {
         val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
-        val admin = adminRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("Admin", userId)
+        val admin = adminRepository.findAdminByNickname(adminNickname) ?: throw UserNotFoundException()
         val adminMessages =
             adminMessagesRepository.findByIdOrNull(id) ?: throw ModelNotFoundException("AdminMessages", id)
         if (adminMessages.receiver.id != user.id && admin.id != userId) {
