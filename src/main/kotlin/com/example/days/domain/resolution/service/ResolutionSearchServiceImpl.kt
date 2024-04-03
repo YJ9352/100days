@@ -25,7 +25,6 @@ class ResolutionSearchServiceImpl(
 
     override fun saveRecentSearchLog(title: String, userId: Long?){
         val now = LocalDateTime.now()
-
         userId?.let {
             val key: String = "SearchLog${userId}"
             val value: SearchLogSearchResponse = SearchLogSearchResponse(title = title, createdAt = now.toString())
@@ -39,7 +38,6 @@ class ResolutionSearchServiceImpl(
     }
 
     override fun findRecentSearchLog(userId: Long): List<SearchLogSearchResponse> {
-
         val key = "SearchLog${userId}"
         val logs: List<SearchLogSearchResponse> = redisTemplate.opsForList().range(key, 0, -1) ?: emptyList()
 

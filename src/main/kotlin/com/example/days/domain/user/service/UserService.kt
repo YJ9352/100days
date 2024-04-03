@@ -26,5 +26,5 @@ interface UserService {
     fun withdraw(userId: UserPrincipal, request: UserPasswordRequest) // 회원탈퇴 (상태 변경 후 7일 뒤 삭제)
     fun passwordChangeInMyInfo(userId: UserPrincipal, request: UserPasswordRequest) // 비밀번호 변경 (회원정보 내부에서 변경)
 
-    fun searchUserAccountId(accountId: String): List<AccountSearchResponse> // 고유아이디 or 닉네임으로 유저 검색
+    fun searchUserAccountId(nickname: String): List<AccountSearchResponse> // 고유아이디 or 닉네임으로 유저 검색
 }

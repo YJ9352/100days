@@ -16,9 +16,9 @@ class UserRepositoryImpl : QueryDslSupport(), CustomUserRepository {
             .fetch()
     }
 
-    override fun seacrhUserByAccountIdAndNickname(accountId: String): List<User> {
+    override fun searchUserByAccountIdAndNickname(nickname: String): List<User> {
         return queryFactory.selectFrom(user)
-            .where(user.accountId.containsIgnoreCase(accountId))
+            .where(user.nickname.containsIgnoreCase(nickname))
             .fetch()
     }
 }

@@ -176,8 +176,8 @@ class UserServiceImpl(
     }
 
     // 고유아이디 or 닉네임으로 유저 검색 > 닉네임의 경우 동일아이디 전부 출력
-    override fun searchUserAccountId(accountId: String): List<AccountSearchResponse> {
-        return userRepository.seacrhUserByAccountIdAndNickname(accountId).map { AccountSearchResponse.from(it) }
+    override fun searchUserAccountId(nickname: String): List<AccountSearchResponse> {
+        return userRepository.searchUserByAccountIdAndNickname(nickname).map { AccountSearchResponse.from(it) }
     }
 
     @Scheduled(cron = "0 0 12 * * ?")
