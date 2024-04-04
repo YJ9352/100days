@@ -148,7 +148,7 @@ class UserServiceImpl(
     }
 
     // 회원탈퇴 (상태 변경 후 7일 뒤 삭제)
-    override fun withdraw(userId: UserPrincipal, request: UserPasswordRequest) {
+    override fun withdraw(userId: UserPrincipal, request: WithdrawRequest) {
         val user = userRepository.findByIdOrNull(userId.id) ?: throw ModelNotFoundException("user", userId.id)
         if (encoder.matches(regexFunc.regexPassword(request.password), user.password)) {
             user.isDelete = true
