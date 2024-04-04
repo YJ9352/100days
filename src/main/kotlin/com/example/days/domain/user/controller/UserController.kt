@@ -82,7 +82,7 @@ class UserController(
     @DeleteMapping()
     fun withdraw(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
-        @RequestBody @Valid request: UserPasswordRequest
+        @RequestBody @Valid request: WithdrawRequest
     ): ResponseEntity<Unit> {
         userService.withdraw(userPrincipal, request)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
