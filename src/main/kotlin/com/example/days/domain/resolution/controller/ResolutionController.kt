@@ -34,9 +34,10 @@ class ResolutionController (
     @Operation(summary = "목표 단건 조회")
     @GetMapping("/{resolutionId}")
     fun getResolutionById(
-        @PathVariable resolutionId: Long
+        @PathVariable resolutionId: Long,
+        @AuthenticationPrincipal userPrincipal: UserPrincipal
     ): ResponseEntity<ResolutionResponse>{
-        val resolution = resolutionService.getResolutionById(resolutionId)
+        val resolution = resolutionService.getResolutionById(resolutionId, userPrincipal)
         return ResponseEntity.ok(resolution)
     }
     @Operation(summary = "목표 전체 조회(페이징)")

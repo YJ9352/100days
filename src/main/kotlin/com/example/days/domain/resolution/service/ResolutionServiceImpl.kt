@@ -9,6 +9,7 @@ import com.example.days.domain.user.repository.UserRepository
 import com.example.days.global.common.SortOrder
 import com.example.days.global.common.exception.common.ModelNotFoundException
 import com.example.days.global.common.exception.auth.PermissionDeniedException
+import com.example.days.global.infra.security.UserPrincipal
 import org.springframework.data.domain.Page
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.repository.findByIdOrNull
@@ -30,12 +31,17 @@ class ResolutionServiceImpl(
         val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
         val category = categoryRepository.findByName(request.category) ?: throw ModelNotFoundException("Category")
         val resolution = resolutionRepository.save(ResolutionRequest.of(request, category, user))
-        return ResolutionResponse.from(resolution)
+        return ResolutionResponse.from(resolution, true)
     }
 
-    override fun getResolutionById(resolutionId: Long): ResolutionResponse {
+    override fun getResolutionById(resolutionId: Long, userPrincipal: UserPrincipal): ResolutionResponse {
         val resolution = getByIdOrNull(resolutionId)
-        return ResolutionResponse.from(resolution)
+        if (resolution.author.id == userPrincipal.id){
+            return ResolutionResponse.from(resolution, true)
+        }else{
+            return ResolutionResponse.from(resolution, false)
+        }
+
     }
 
     override fun getResolutionListPaginated(page: Int, sortOrder: SortOrder?): Page<SimpleResolutionResponse> {
@@ -49,7 +55,7 @@ class ResolutionServiceImpl(
         val updatedResolution = getByIdOrNull(resolutionId)
         if (updatedResolution.author.id == userId) {
             updatedResolution.updateResolution(request.title, request.description, category)
-            return ResolutionResponse.from(updatedResolution)
+            return ResolutionResponse.from(updatedResolution, true)
         } else throw PermissionDeniedException()
 
     }
@@ -71,13 +77,7 @@ class ResolutionServiceImpl(
 //    @Scheduled(fixedRate = 180000)
     @Scheduled(cron = "0 0 0 * * *")
     fun resetResolutionStatus() {
-        // ^오^
-        // resetResolutionDailyStatus, resetResolutionDailyStatus2 이렇게 2가지 버젼이 있습니다.
-        // 첫번째 건 queryDSL, 두번째건 JPQL 을 이용한 메서드입니다.
-        // 어떤 방법이 이득인지 고민입니다.
         resolutionRepository.resetResolutionDailyStatus2()
-        // 테스트 시
-//        val today: LocalDateTime = LocalDateTime.now()
         val today: LocalDate = LocalDate.now()
         resolutionRepository.checkResolutionDeadline(today)
     }
@@ -93,7 +93,7 @@ class ResolutionServiceImpl(
     override fun getMyResolutionById(resolutionId: Long, userId: Long): ResolutionResponse {
         val resolution = getByIdOrNull(resolutionId)
         if (resolution.author.id == userId){
-            return ResolutionResponse.from(resolution)
+            return ResolutionResponse.from(resolution, true)
         }
         else throw PermissionDeniedException()
     }
