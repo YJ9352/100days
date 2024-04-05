@@ -18,7 +18,5 @@ interface ResolutionRepository: JpaRepository<Resolution, Long>, QueryResolution
     @Modifying
     @Transactional
     @Query("UPDATE Resolution r SET r.completeStatus = true WHERE r.deadline <= :today")
-    // 테스트 시
-//    fun checkResolutionDeadline(@Param("today") today: LocalDateTime)
     fun checkResolutionDeadline(@Param("today") today: LocalDate)
 }

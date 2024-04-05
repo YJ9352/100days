@@ -14,6 +14,7 @@ data class ResolutionResponse(
     val category: String,
     val progress: Long,
     val likeCount: Long,
+    val isAuthor: Boolean,
 
     // ^오^: 시간 형식으로 값을 바꿔주는 어노테이션
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -25,7 +26,7 @@ data class ResolutionResponse(
 ) {
 
     companion object {
-        fun from(resolution: Resolution) = ResolutionResponse(
+        fun from(resolution: Resolution, status: Boolean) = ResolutionResponse(
             id = resolution.id,
             title = resolution.title,
             description = resolution.description,
@@ -36,7 +37,8 @@ data class ResolutionResponse(
             likeCount = resolution.likeCount,
             createdAt = resolution.createdAt,
             updatedAt = resolution.updatedAt,
-            deadline = resolution.deadline
+            deadline = resolution.deadline,
+            isAuthor = status
         )
     }
 }
