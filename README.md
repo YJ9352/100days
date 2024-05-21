@@ -16,7 +16,7 @@
 작심삼일이란 사자성어와 삼개월간 꾸준히 무언가를 하면 습관이 된다는 연구결과를 합쳐, 이용자가 100일간 이루어나갈 자신의 목표를 정하고 다른 유저와 함께 달리며 동기를 유지하기 위해 만들어진 프로젝트입니다.
 
 ## 소개 영상
-<iframe width="560" height="315" src="https://www.youtube.com/embed/XkGbiIXkt78" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[![Video Label](http://img.youtube.com/vi/XkGbiIXkt78/0.jpg)](https://youtu.be/XkGbiIXkt78)
 
 ## 주요 개발 기능
 ### 회원 CRUD / 인증 & 인가
